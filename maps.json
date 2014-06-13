@@ -1,9 +1,10 @@
 { 
-	"0": {
-		"id": 0,
+	"0-12": {
+		"area": 0,
+		"id": 12,
 		"name": "respawn fields",
 		"desc": "Grass, grass, all around",
-		"exits": ["n", "s", "e", "w"],
+		"exits": {"n":"7", "s":"17", "e":"13", "w":"11"},
 		"map": [
 			"vvvvv",
 			"vvvvv",
@@ -13,15 +14,16 @@
 		]
 	},
 
-	"1": {
-		"id": 1,
+	"0-7": {
+		"area": 0,
+		"id": 7,
 		"name": "respawn fields",
 		"desc": "Grass, grass, grass, all around",
-		"exits": ["n", "s", "e", "w"],
+		"exits": {"n":"2", "s":"12", "e":"8", "w":"6"},
 		"map": [
 			"vvvvv",
+			"vvXvv",
 			"vvvvv",
-			"vvvXv",
 			"vvvvv",
 			"vvvvv"
 		]

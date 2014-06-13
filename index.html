@@ -48,6 +48,11 @@
             <li id="mapdesc"></li>
             <li id="mapexits"></li>
             <br />
+            <li id="map0"></li>
+            <li id="map1"></li>
+            <li id="map2"></li>
+            <li id="map3"></li>
+            <li id="map4"></li>
           </ul>
         <td>
       </tr>
@@ -87,14 +92,16 @@
 
       socket.on('map', function(data){
         console.dir(data['map']);
-        $('#mapname').text(data['name']);
+        $('#mapname').text('=== ' + data['name'] + ' ===');
         $('#mapdesc').text(data['desc']);
-        $('#mapexits').text(data['exits']);
-        $('#map').append($('<li>').text(data['map'][0]));
-        $('#map').append($('<li>').text(data['map'][1]));
-        $('#map').append($('<li>').text(data['map'][2]));
-        $('#map').append($('<li>').text(data['map'][3]));
-        $('#map').append($('<li>').text(data['map'][4]));
+        var mapexits = [];
+        for(var k in data['exits']) mapexits.push(k);
+        $('#mapexits').text('exits: ' + mapexits);
+        $('#map0').text(data['map'][0]);
+        $('#map1').text(data['map'][1]);
+        $('#map2').text(data['map'][2]);
+        $('#map3').text(data['map'][3]);
+        $('#map4').text(data['map'][4]);
       });
     </script>
     

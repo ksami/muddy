@@ -43,10 +43,11 @@ io.on('connection', function(socket){
 	
 	//When user first connects
 	socket.join(socket.id);
+	socket.join('/hints');
 	console.log('user ' + socket.id + ' connected');
 	console.log(socket.rooms);
 	io.to(socket.id).emit('message', 'Welcome! Please login by typing your nick with @nick');
-	io.to(socket.id).emit('map', maps['0']);
+	io.to(socket.id).emit('map', maps['0-12']);
 	
 	//Bind nick and socket.id
 	socket.on('nick', function(nick){
@@ -74,5 +75,5 @@ http.listen(port, function(){
 });
 
 setInterval(function() {
-	io.emit('message', 'Remember to leave feedback at github.com/ksami/muddy');
+	io.to('/hints').emit('message', 'Remember to leave feedback at github.com/ksami/muddy');
 }, 60000);
