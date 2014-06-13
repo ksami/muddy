@@ -1,0 +1,29 @@
+{ 
+	"0": {
+		"id": 0,
+		"name": "respawn fields",
+		"desc": "Grass, grass, all around",
+		"exits": ["n", "s", "e", "w"],
+		"map": [
+			"vvvvv",
+			"vvvvv",
+			"vvXvv",
+			"vvvvv",
+			"vvvvv"
+		]
+	},
+
+	"1": {
+		"id": 1,
+		"name": "respawn fields",
+		"desc": "Grass, grass, grass, all around",
+		"exits": ["n", "s", "e", "w"],
+		"map": [
+			"vvvvv",
+			"vvvvv",
+			"vvvXv",
+			"vvvvv",
+			"vvvvv"
+		]
+	}
+}

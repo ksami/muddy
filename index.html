@@ -9,6 +9,7 @@
         width: 640px;
         padding: 5px;
         overflow: auto;
+        font-family: "consolas";
         border-color: black;
         border-width: 1px;
         border-style: solid;
@@ -19,10 +20,14 @@
         width: 300px;
         padding: 5px;
         overflow: auto;
+        font-family: "consolas";
         border-color: black;
         border-width: 1px;
         border-style: solid;
         list-style-type: none; 
+      }
+      #mapname {
+        font-style: underline;
       }
       form input {
         width: 300px;
@@ -38,7 +43,12 @@
           <ul id="messages"></ul>
         </td>
         <td>
-          <ul id="map"></ul>
+          <ul id="map">
+            <li id="mapname"></li>
+            <li id="mapdesc"></li>
+            <li id="mapexits"></li>
+            <br />
+          </ul>
         <td>
       </tr>
       <tr>
@@ -57,13 +67,34 @@
       var socket = io();
       $('form').submit(function(){
         var msg = $('#m').val();
-        socket.emit('message', msg);
+        
+        var cmdtest = msg.split(" ");
+        if(cmdtest[0] === "@nick") {
+          socket.emit('nick', cmdtest[1]);
+        }
+        else {
+          socket.emit('command', msg);  
+        }
+      
         $('#m').val('');
         return false;
       });
-      socket.on('messageBroad', function(msg){
+
+      socket.on('message', function(msg){
         $('#messages').append($('<li>').text(msg));
         scrollToBottom('#messages');
+      });
+
+      socket.on('map', function(data){
+        console.dir(data['map']);
+        $('#mapname').text(data['name']);
+        $('#mapdesc').text(data['desc']);
+        $('#mapexits').text(data['exits']);
+        $('#map').append($('<li>').text(data['map'][0]));
+        $('#map').append($('<li>').text(data['map'][1]));
+        $('#map').append($('<li>').text(data['map'][2]));
+        $('#map').append($('<li>').text(data['map'][3]));
+        $('#map').append($('<li>').text(data['map'][4]));
       });
     </script>
     
