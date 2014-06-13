@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  
+  <head>
+    <title>server-test</title>
+    <style>
+      #messages {
+        height: 300px;
+        width: 640px;
+        padding: 5px;
+        overflow: auto;
+        border-color: black;
+        border-width: 1px;
+        border-style: solid;
+        list-style-type: none;
+      }
+      #map {
+        height: 300px;
+        width: 300px;
+        padding: 5px;
+        overflow: auto;
+        border-color: black;
+        border-width: 1px;
+        border-style: solid;
+        list-style-type: none; 
+      }
+      form input {
+        width: 300px;
+      }
+    </style>
+  </head>
+  
+  <body>
+
+    <table>
+      <tr>
+        <td>
+          <ul id="messages"></ul>
+        </td>
+        <td>
+          <ul id="map"></ul>
+        <td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <form>
+            <input id="m" autocomplete="off" /><button>Send</button>
+          </form>
+        </td>
+      </tr>
+    </table>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    
+    <script>
+      var socket = io();
+      $('form').submit(function(){
+        var msg = $('#m').val();
+        socket.emit('message', msg);
+        $('#m').val('');
+        return false;
+      });
+      socket.on('messageBroad', function(msg){
+        $('#messages').append($('<li>').text(msg));
+        scrollToBottom('#messages');
+      });
+    </script>
+    
+    <script>
+      var buffer = 100;
+      var scrollToBottom = function(id) {
+        if( $('#messages li').length > buffer*2) {
+          $('#messages li').slice(0,buffer).remove();
+        }
+        $(id).scrollTop($(id)[0].scrollHeight);
+      }
+    </script>
+  
+  </body>
+</html>
