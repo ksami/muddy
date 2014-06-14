@@ -1,12 +1,14 @@
 var port = 3000;
-var _fileindex = __dirname + '/index.html';
-var _filemaps = __dirname + '/maps.json';
-var _fileusers = __dirname + '/users.json';
+var _fileindex = __dirname + '/public/index.html';
+var _filemaps = __dirname + '/json/maps.json';
+var _fileusers = __dirname + '/json/users.json';
 
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
+app.use(express.static(__dirname + '/public'));
 
 var maps = {};
 var users = {};
