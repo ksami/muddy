@@ -46,14 +46,18 @@ io.on('connection', function(socket){
 	//When user first connects
 	socket.join(socket.id);
 	socket.join('/hints');
+	socket.join('/world');
 	console.log('user ' + socket.id + ' connected');
-	console.log(socket.rooms);
 	io.to(socket.id).emit('message', 'Welcome! Please login by typing your nick with @nick');
-	io.to(socket.id).emit('map', maps['0-12']);
 	
 	//Bind nick and socket.id
 	socket.on('nick', function(nick){
-		users[nick] = {"nick": nick, "socketid": socket.id};
+		if(users.hasOwnProperty(nick)) {
+			users[nick].socketid = socket.id;
+		}
+		else {
+			users[nick] = {"nick": nick, "socketid": socket.id, "at": "0-12"};
+		}
 		fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
 			if(err) {
 				console.log("User file error: " + err);
@@ -61,8 +65,14 @@ io.on('connection', function(socket){
 			else {
 				console.log("Users.JSON save to " + _fileusers);
 				io.to(socket.id).emit('message', 'Your nick has been set to ' + nick);
+				io.to(socket.id).emit('map', maps[users[nick]['at']]);
 			}
 		})
+	})
+
+	socket.on('disconnect', function() {
+		console.log("user " + socket.id + " disconnected");
+		fs.writeFile(_fileusers, JSON.stringify(users, null, 4));
 	})
 
 	//Any other input, echo back
