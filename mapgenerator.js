@@ -13,7 +13,8 @@ function map(area, id, name, desc) {
 		"vvvvv",
 		"vvvvv",
 		"vvvvv"
-	]
+	],
+	this.mobs = []
 }
 
 var maps = {};

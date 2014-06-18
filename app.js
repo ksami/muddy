@@ -2,6 +2,7 @@ var port = 3000;
 var _fileindex = __dirname + '/public/index.html';
 var _filemaps = __dirname + '/json/mapss.json';
 var _fileusers = __dirname + '/json/users.json';
+var _filemobs = __dirname + '/json/mobs.json';
 
 var express = require('express');
 var app = express();
@@ -13,6 +14,7 @@ app.use(express.static(__dirname + '/public'));
 var maps = {};
 var users = {};
 var socketid = {};
+var mobs = [];
 
 
 //Read data files
@@ -22,7 +24,21 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 		return;
 	}
 	maps = JSON.parse(data);
-	console.dir(maps);
+	//console.dir(maps);
+})
+fs.readFile(_filemobs, 'utf8', function (err, data) {
+	if(err) {
+		console.log('Mob file error: ' + err);
+		return;
+	}
+	mobs = JSON.parse(data);
+	console.dir(mobs);
+
+	for(var i=0; i<mobs.length; i++) {
+		console.log("mob at: " + mobs[i].at);
+		(maps[mobs[i].at].mobs).push(mobs[i]);
+		console.log(maps[mobs[i].at].mobs);
+	}
 })
 fs.readFile(_fileusers, 'utf8', function (err, data) {
 	if(err) {
@@ -83,7 +99,6 @@ io.on('connection', function(socket){
 			player.at = maps[player.at].exits[direction[0]];
 			io.to(socket.id).emit('map', maps[player.at]);
 			console.log(socketid[socket.id] + " moves: " + direction + " to " + player.at);
-			console.dir(users);
 		}
 		else {
 			io.to(socket.id).emit('message', 'You cannot move in that direction');

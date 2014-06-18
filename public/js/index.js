@@ -35,9 +35,14 @@ socket.on('map', function(data){
   console.dir(data['map']);
   $('#mapname').text('=== ' + data['name'] + ' ===');
   $('#mapdesc').text(data['desc']);
+  
   var mapexits = [];
   for(var k in data['exits']) mapexits.push(k);
-    $('#mapexits').text('exits: ' + mapexits);
+  $('#mapexits').text('exits: ' + mapexits);
+  
+  var mapmobs = [];
+  for(var j=0; j<data['mobs'].length; j++) mapmobs.push(data['mobs'][j].name);
+  $('#mapmobs').text('mobs: ' + mapmobs);
   $('#map0').text(data['map'][0]);
   $('#map1').text(data['map'][1]);
   $('#map2').text(data['map'][2]);

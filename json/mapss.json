@@ -11,6 +11,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "e": "m0-1",
             "s": "m0-5"
@@ -28,6 +29,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-0",
             "e": "m0-2",
@@ -46,6 +48,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-1",
             "e": "m0-3",
@@ -64,6 +67,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-2",
             "e": "m0-4",
@@ -82,6 +86,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-3",
             "s": "m0-9"
@@ -99,6 +104,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "e": "m0-6",
             "n": "m0-0",
@@ -117,6 +123,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-5",
             "e": "m0-7",
@@ -136,6 +143,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-6",
             "e": "m0-8",
@@ -155,6 +163,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-7",
             "e": "m0-9",
@@ -174,6 +183,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-8",
             "n": "m0-4",
@@ -192,6 +202,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "e": "m0-11",
             "n": "m0-5",
@@ -210,6 +221,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-10",
             "e": "m0-12",
@@ -229,6 +241,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-11",
             "e": "m0-13",
@@ -248,6 +261,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-12",
             "e": "m0-14",
@@ -267,6 +281,7 @@
             "vvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-13",
             "n": "m0-9",
@@ -285,6 +300,7 @@
             "Xvvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "e": "m0-16",
             "n": "m0-10",
@@ -303,6 +319,7 @@
             "vXvvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-15",
             "e": "m0-17",
@@ -322,6 +339,7 @@
             "vvXvv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-16",
             "e": "m0-18",
@@ -341,6 +359,7 @@
             "vvvXv",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-17",
             "e": "m0-19",
@@ -360,6 +379,7 @@
             "vvvvX",
             "vvvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-18",
             "n": "m0-14",
@@ -378,6 +398,7 @@
             "vvvvv",
             "Xvvvv"
         ],
+        "mobs": [],
         "exits": {
             "e": "m0-21",
             "n": "m0-15"
@@ -395,6 +416,7 @@
             "vvvvv",
             "vXvvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-20",
             "e": "m0-22",
@@ -413,6 +435,7 @@
             "vvvvv",
             "vvXvv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-21",
             "e": "m0-23",
@@ -431,6 +454,7 @@
             "vvvvv",
             "vvvXv"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-22",
             "e": "m0-24",
@@ -449,6 +473,7 @@
             "vvvvv",
             "vvvvX"
         ],
+        "mobs": [],
         "exits": {
             "w": "m0-23",
             "n": "m0-19"
