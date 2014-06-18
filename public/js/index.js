@@ -6,6 +6,18 @@ $('form').submit(function(){
   if(cmdtest[0] === "@nick") {
     socket.emit('nick', cmdtest[1]);
   }
+  else if("north".slice(0, cmdtest[0].length) === cmdtest[0]) {
+    socket.emit('move', 'north');
+  }
+  else if("south".slice(0, cmdtest[0].length) === cmdtest[0]) {
+    socket.emit('move', 'south');
+  }
+  else if("east".slice(0, cmdtest[0].length) === cmdtest[0]) {
+    socket.emit('move', 'east');
+  }
+  else if("west".slice(0, cmdtest[0].length) === cmdtest[0]) {
+    socket.emit('move', 'west');
+  }
   else {
     socket.emit('command', msg);  
   }

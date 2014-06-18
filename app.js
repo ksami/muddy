@@ -1,6 +1,6 @@
 var port = 3000;
 var _fileindex = __dirname + '/public/index.html';
-var _filemaps = __dirname + '/json/maps.json';
+var _filemaps = __dirname + '/json/mapss.json';
 var _fileusers = __dirname + '/json/users.json';
 
 var express = require('express');
@@ -12,6 +12,7 @@ app.use(express.static(__dirname + '/public'));
 
 var maps = {};
 var users = {};
+var socketid = {};
 
 
 //Read data files
@@ -30,6 +31,10 @@ fs.readFile(_fileusers, 'utf8', function (err, data) {
 	}
 	users = JSON.parse(data);
 	console.dir(users);
+
+	for(user in users){
+		socketid[user.socketid] = user.nick;
+	}
 })
 
 
@@ -42,7 +47,7 @@ app.get('/',function(req, res){
 
 
 io.on('connection', function(socket){
-	
+	var player;
 	//When user first connects
 	socket.join(socket.id);
 	socket.join('/hints');
@@ -52,11 +57,13 @@ io.on('connection', function(socket){
 	
 	//Bind nick and socket.id
 	socket.on('nick', function(nick){
+		socketid[socket.id] = nick;
+
 		if(users.hasOwnProperty(nick)) {
 			users[nick].socketid = socket.id;
 		}
 		else {
-			users[nick] = {"nick": nick, "socketid": socket.id, "at": "0-12"};
+			users[nick] = {"nick": nick, "socketid": socket.id, "at": "m0-12"};
 		}
 		fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
 			if(err) {
@@ -68,12 +75,25 @@ io.on('connection', function(socket){
 				io.to(socket.id).emit('map', maps[users[nick]['at']]);
 			}
 		})
+		player = users[socketid[socket.id]];
 	})
+
+	socket.on('move', function(direction) {
+		if(maps[player.at].exits.hasOwnProperty(direction[0])) {
+			player.at = maps[player.at].exits[direction[0]];
+			io.to(socket.id).emit('map', maps[player.at]);
+			console.log(socketid[socket.id] + " moves: " + direction + " to " + player.at);
+			console.dir(users);
+		}
+		else {
+			io.to(socket.id).emit('message', 'You cannot move in that direction');
+		}
+	});
 
 	socket.on('disconnect', function() {
 		console.log("user " + socket.id + " disconnected");
 		fs.writeFile(_fileusers, JSON.stringify(users, null, 4));
-	})
+	});
 
 	//Any other input, echo back
 	socket.on('command', function(msg){
