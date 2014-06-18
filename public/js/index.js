@@ -3,21 +3,38 @@
  */
 
 var socket = io();
+var socketid;
+var nick;
 
 //==========================
 // Trigger events on server
 //==========================
 
-// When user press enter/click send
-$('form').submit(function(){
+// When user logs in
+$('#login').submit(function(){
+  var username = $('#username').val();
+  var password = $('#password').val();
+  if(username.length < 2){
+    $('#password').val('');
+    alert('username must be 3 or more characters long');
+  }
+  else{
+    socket.emit('reqlogin', {'username': username, 'password': password});
+  }
+  return false;
+});
+
+// When user enters a command
+$('#command').submit(function(){
   var msg = $('#m').val();
   msg = msg.trim();
+
+  //echo everything typed in, whitespaced trimmed
+  $('#messages').append($('<li>').text('> '+ msg));
+  scrollToBottom('#messages');
   
   var cmdtest = msg.split(" ");
-  if(cmdtest[0] === "@nick") {
-    socket.emit('nick', cmdtest[1]);
-  }
-  else if(cmdtest[0] === "/all") {
+  if(cmdtest[0] === "/all") {
     msg = msg.slice(cmdtest[0].length);
     socket.emit('chat', {'to': '/all', 'content': msg.trim()});
   }
@@ -36,7 +53,7 @@ $('form').submit(function(){
   else {
     socket.emit('command', msg);  
   }
-  
+
   $('#m').val('');
   return false;
 });
@@ -44,6 +61,22 @@ $('form').submit(function(){
 //==============================================
 // Event handlers for events triggered by server
 //==============================================
+socket.on('socketid', function(id){
+  socketid = id;
+});
+
+socket.on('loginverified', function(username){
+  nick = username;
+  $('#password').val('');
+  $('#login').toggleClass('hide');
+  $('#main').toggleClass('hide');
+});
+
+socket.on('loginfailed', function(){
+  $('#password').val('');
+  alert('Wrong password, please try again');
+})
+
 socket.on('message', function(msg){
   $('#messages').append($('<li>').text(msg));
   scrollToBottom('#messages');
@@ -85,3 +118,14 @@ var scrollToBottom = function(id) {
   }
   $(id).scrollTop($(id)[0].scrollHeight);
 }
+
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr, len;
+  if (this.length == 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  return hash;
+};

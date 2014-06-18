@@ -23,6 +23,9 @@
 #mapname {
   font-style: underline;
 }
+.hide{
+  display:none;
+}
 form input {
   width: 300px;
 }

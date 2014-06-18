@@ -7,8 +7,16 @@
   </head>
   
   <body>
-
-    <table>
+    <div>
+      <form id="login">
+        Username: <input id="username">
+        <br>
+        Password: <input id="password" type="password">
+        <br>
+        <button>Login</button>
+      </form>
+    </div>
+    <table id="main" class="hide">
       <tr>
         <td>
           <ul id="messages"></ul>
@@ -30,7 +38,7 @@
       </tr>
       <tr>
         <td colspan="2">
-          <form>
+          <form id="command">
             <input id="m" autocomplete="off" /><button>Send</button>
           </form>
         </td>

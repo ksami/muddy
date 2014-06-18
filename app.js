@@ -4,6 +4,7 @@
 
 // Environment configurables
 var port = 3000;
+var _filepwd = __dirname + '/.private/pwd'
 var _fileindex = __dirname + '/public/index.html';
 var _filemaps = __dirname + '/json/mapss.json';
 var _fileusers = __dirname + '/json/users.json';
@@ -45,7 +46,7 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 	}
 	maps = JSON.parse(data);
 	//console.dir(maps);
-})
+});
 fs.readFile(_filemobs, 'utf8', function (err, data) {
 	if(err) {
 		console.log('Mob file error: ' + err);
@@ -59,7 +60,7 @@ fs.readFile(_filemobs, 'utf8', function (err, data) {
 		(maps[mobs[i].at].mobs).push(mobs[i]);
 		console.log(maps[mobs[i].at].mobs);
 	}
-})
+});
 fs.readFile(_fileusers, 'utf8', function (err, data) {
 	if(err) {
 		console.log('User file error: ' + err);
@@ -71,7 +72,7 @@ fs.readFile(_fileusers, 'utf8', function (err, data) {
 	for(user in users){
 		socketid[user.socketid] = user.nick;
 	}
-})
+});
 
 
 //=========
@@ -85,36 +86,94 @@ io.on('connection', function(socket){
 	socket.join('/hints');
 	socket.join('/all');
 	console.log('user ' + socket.id + ' connected');
-	io.to(socket.id).emit('message', 'Welcome! Please login by typing your nick with @nick');
+	io.to(socket.id).emit('socketid', socket.id);
 	
 
 	//==============================================
 	// Event handlers for events triggered by client
 	//==============================================
 
-	// Bind nick and socket.id
-	socket.on('nick', function(nick){
-		socketid[socket.id] = nick;
+	socket.on('reqlogin', function(login){
+		console.log(login.username + ': ' + login.password);
 
-		if(users.hasOwnProperty(nick)) {
-			users[nick].socketid = socket.id;
-		}
-		else {
-			users[nick] = {"nick": nick, "socketid": socket.id, "at": "m0-12"};
-		}
-		fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
-			if(err) {
-				console.log("User file error: " + err);
+		// if username already exists in database
+		if(users.hasOwnProperty(login.username)){
+			//BUG: line 249, doesnt return true even if correct password
+			if(verifyPassword(login) === true){
+				//update user's socketid
+				users[login.username].socketid = socket.id;
+
+				//update users file
+				fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
+					if(err) {
+						console.log("User file error: " + err);
+					}
+					else {
+						console.log("Users.JSON save to " + _fileusers);
+						io.to(socket.id).emit('map', maps[users[login.username].at]);
+					}
+				});
+
+				//assign globals
+				socketid[socket.id] = login.username;
+				player = users[login.username];
+
+				console.log("pass");
+				io.to(socket.id).emit('loginverified', login.username);
+				io.to(socket.id).emit('message', 'Welcome ' + login.username + '!');
 			}
-			else {
-				console.log("Users.JSON save to " + _fileusers);
-				io.to(socket.id).emit('message', 'Your nick has been set to ' + nick);
-				io.to(socket.id).emit('map', maps[users[nick]['at']]);
+			else{
+				console.log("wrong password");
+				io.to(socket.id).emit('loginfailed');
 			}
-		})
-		player = users[socketid[socket.id]];
+		}
+		// if doesn't exist, create new record
+		else{
+			//create the new user
+			users[login.username] = {"nick": login.username, "socketid": socket.id, "at": "m0-12"};
+
+			//update users file
+			fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
+				if(err) {
+					console.log("User file error: " + err);
+				}
+				else {
+					console.log("Users.JSON save to " + _fileusers);
+					io.to(socket.id).emit('map', maps[users[login.username].at]);
+				}
+			});
+
+			//update pwd file
+			var pwds = {};
+			fs.readFile(_filepwd, 'utf8', function (err, data) {
+				if(err) {
+					console.log('Password file error: ' + err);
+					return;
+				}
+				pwds = JSON.parse(data);
+				//console.dir(pwds);
+			});
+			pwds[login.username] = login.password;
+			fs.writeFile(_fileusers, JSON.stringify(pwds, null, 4), function(err) {
+				if(err) {
+					console.log("Password file error: " + err);
+				}
+				else {
+					console.log("Password save");
+				}
+			});
+
+			//assign globals
+			socketid[socket.id] = login.username;
+			player = users[login.username];
+
+			console.log("pass - registration");
+			io.to(socket.id).emit('loginverified', login.username);
+			io.to(socket.id).emit('message', 'Welcome first time user ' + login.username + '!');
+		}
 	});
 
+	
 	// Add msg.from and send to msg.to
 	socket.on('chat', function(msg) {
 		msg.from = player.nick;
@@ -150,6 +209,47 @@ io.on('connection', function(socket){
 //=======
 // Other
 //=======
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr, len;
+  if (this.length == 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  return hash;
+};
+
+var verifyPassword = function(login) {
+	var pwds = {};
+	var verified = false;
+	fs.readFile(_filepwd, 'utf8', function (err, data) {
+		if(err) {
+			console.log('Password file error: ' + err);
+			return;
+		}
+		else {
+			pwds = JSON.parse(data);
+			console.dir(pwds);
+
+			console.log(pwds.hasOwnProperty(login.username));
+			console.log(pwds[login.username] === login.password);
+			if((pwds.hasOwnProperty(login.username)) && (pwds[login.username] === login.password)) {
+				verified = true;
+				console.log('1verified is ' + verified);
+			}
+			else{
+				verified = false;
+			}
+			console.log('2verified is ' + verified);
+		}
+	});
+	console.log('3verified is ' + verified);
+
+	// BUG:!!! does not reach return statement???? wth
+	return verified;
+};
+
 setInterval(function() {
 	io.to('/hints').emit('message', 'Remember to leave feedback at github.com/ksami/muddy');
 }, 60000);
