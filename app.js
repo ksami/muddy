@@ -98,7 +98,6 @@ io.on('connection', function(socket){
 
 		// if username already exists in database
 		if(users.hasOwnProperty(login.username)){
-			//BUG: line 249, doesnt return true even if correct password
 			if(verifyPassword(login) === true){
 				//update user's socketid
 				users[login.username].socketid = socket.id;
@@ -151,16 +150,15 @@ io.on('connection', function(socket){
 					return;
 				}
 				pwds = JSON.parse(data);
-				//console.dir(pwds);
-			});
-			pwds[login.username] = login.password;
-			fs.writeFile(_fileusers, JSON.stringify(pwds, null, 4), function(err) {
-				if(err) {
-					console.log("Password file error: " + err);
-				}
-				else {
-					console.log("Password save");
-				}
+				pwds[login.username] = login.password;
+				fs.writeFile(_fileusers, JSON.stringify(pwds, null, 4), function(err) {
+					if(err) {
+						console.log("Password file error: " + err);
+					}
+					else {
+						console.log("Password save");
+					}
+				});
 			});
 
 			//assign globals
@@ -220,34 +218,18 @@ String.prototype.hashCode = function() {
   return hash;
 };
 
+//use synchronous file read to verify password
 var verifyPassword = function(login) {
 	var pwds = {};
-	var verified = false;
-	fs.readFile(_filepwd, 'utf8', function (err, data) {
-		if(err) {
-			console.log('Password file error: ' + err);
-			return;
-		}
-		else {
-			pwds = JSON.parse(data);
-			console.dir(pwds);
+	pwds = JSON.parse(fs.readFileSync(_filepwd, 'utf8'));
+	console.dir(pwds);
 
-			console.log(pwds.hasOwnProperty(login.username));
-			console.log(pwds[login.username] === login.password);
-			if((pwds.hasOwnProperty(login.username)) && (pwds[login.username] === login.password)) {
-				verified = true;
-				console.log('1verified is ' + verified);
-			}
-			else{
-				verified = false;
-			}
-			console.log('2verified is ' + verified);
-		}
-	});
-	console.log('3verified is ' + verified);
-
-	// BUG:!!! does not reach return statement???? wth
-	return verified;
+	if((pwds.hasOwnProperty(login.username)) && (pwds[login.username] === login.password)) {
+		return true;
+	}
+	else{
+		return false;
+	}
 };
 
 setInterval(function() {
