@@ -1,10 +1,15 @@
 var socket = io();
 $('form').submit(function(){
   var msg = $('#m').val();
+  msg = msg.trim();
   
   var cmdtest = msg.split(" ");
   if(cmdtest[0] === "@nick") {
     socket.emit('nick', cmdtest[1]);
+  }
+  else if(cmdtest[0] === "/all") {
+    msg = msg.slice(cmdtest[0].length);
+    socket.emit('chat', {'to': '/all', 'content': msg.trim()});
   }
   else if("north".slice(0, cmdtest[0].length) === cmdtest[0]) {
     socket.emit('move', 'north');
@@ -50,6 +55,11 @@ socket.on('map', function(data){
   $('#map4').text(data['map'][4]);
 });
 
+socket.on('chat', function(msg){
+  var chatmsg = msg.from + ': ' + msg.content;
+  $('#messages').append($('<li>').text(chatmsg));
+  scrollToBottom('#messages');
+})
 
 
 var buffer = 100;

@@ -67,7 +67,7 @@ io.on('connection', function(socket){
 	//When user first connects
 	socket.join(socket.id);
 	socket.join('/hints');
-	socket.join('/world');
+	socket.join('/all');
 	console.log('user ' + socket.id + ' connected');
 	io.to(socket.id).emit('message', 'Welcome! Please login by typing your nick with @nick');
 	
@@ -92,7 +92,13 @@ io.on('connection', function(socket){
 			}
 		})
 		player = users[socketid[socket.id]];
-	})
+	});
+
+	socket.on('chat', function(msg) {
+		msg.from = player.nick;
+		console.dir(msg);
+		io.to(msg.to).emit('chat', msg);
+	});
 
 	socket.on('move', function(direction) {
 		if(maps[player.at].exits.hasOwnProperty(direction[0])) {
