@@ -1,12 +1,17 @@
 {
     "ken": {
         "nick": "ken",
-        "socketid": "2yw8WniETmkgo_-mAAAB",
+        "socketid": "K12Dt8wAUri2wlllAAAA",
         "at": "m0-9"
     },
     "ksami": {
         "nick": "ksami",
         "socketid": "cnkEsOuauWG-jlt0AAAA",
         "at": "m0-7"
+    },
+    "kne": {
+        "nick": "kne",
+        "socketid": "l6HS9Pq9-py-1FvDAAAA",
+        "at": "m0-12"
     }
 }

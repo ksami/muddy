@@ -1,4 +1,14 @@
+/*
+ * Client-side JS
+ */
+
 var socket = io();
+
+//==========================
+// Trigger events on server
+//==========================
+
+// When user press enter/click send
 $('form').submit(function(){
   var msg = $('#m').val();
   msg = msg.trim();
@@ -31,6 +41,9 @@ $('form').submit(function(){
   return false;
 });
 
+//==============================================
+// Event handlers for events triggered by server
+//==============================================
 socket.on('message', function(msg){
   $('#messages').append($('<li>').text(msg));
   scrollToBottom('#messages');
@@ -59,9 +72,12 @@ socket.on('chat', function(msg){
   var chatmsg = msg.from + ': ' + msg.content;
   $('#messages').append($('<li>').text(chatmsg));
   scrollToBottom('#messages');
-})
+});
 
 
+//====================================
+// Helper functions running on client
+//====================================
 var buffer = 100;
 var scrollToBottom = function(id) {
   if( $('#messages li').length > buffer*2) {

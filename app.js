@@ -1,9 +1,15 @@
+/*
+ * Server-side JS - Main file
+ */
+
+// Environment configurables
 var port = 3000;
 var _fileindex = __dirname + '/public/index.html';
 var _filemaps = __dirname + '/json/mapss.json';
 var _fileusers = __dirname + '/json/users.json';
 var _filemobs = __dirname + '/json/mobs.json';
 
+// Dependencies
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -11,13 +17,27 @@ var io = require('socket.io')(http);
 var fs = require('fs');
 app.use(express.static(__dirname + '/public'));
 
+// Globals
 var maps = {};
 var users = {};
 var socketid = {};
 var mobs = [];
 
+// Listen to <port>
+http.listen(port, function(){
+	console.log('listening on *:' + port);
+});
 
-//Read data files
+// Route handler
+app.get('/',function(req, res){
+	res.sendfile(_fileindex);
+});
+
+
+//================
+// Read data files
+//===============
+
 fs.readFile(_filemaps, 'utf8', function (err, data) {
 	if(err) {
 		console.log('Map file error: ' + err);
@@ -54,24 +74,25 @@ fs.readFile(_fileusers, 'utf8', function (err, data) {
 })
 
 
-
-//Route handler
-app.get('/',function(req, res){
-	res.sendfile(_fileindex);
-});
-
-
-
+//=========
+// Session
+//=========
 io.on('connection', function(socket){
 	var player;
-	//When user first connects
+	
+	// When user first connects
 	socket.join(socket.id);
 	socket.join('/hints');
 	socket.join('/all');
 	console.log('user ' + socket.id + ' connected');
 	io.to(socket.id).emit('message', 'Welcome! Please login by typing your nick with @nick');
 	
-	//Bind nick and socket.id
+
+	//==============================================
+	// Event handlers for events triggered by client
+	//==============================================
+
+	// Bind nick and socket.id
 	socket.on('nick', function(nick){
 		socketid[socket.id] = nick;
 
@@ -94,12 +115,14 @@ io.on('connection', function(socket){
 		player = users[socketid[socket.id]];
 	});
 
+	// Add msg.from and send to msg.to
 	socket.on('chat', function(msg) {
 		msg.from = player.nick;
 		console.dir(msg);
 		io.to(msg.to).emit('chat', msg);
 	});
 
+	// Boundary checking then move player
 	socket.on('move', function(direction) {
 		if(maps[player.at].exits.hasOwnProperty(direction[0])) {
 			player.at = maps[player.at].exits[direction[0]];
@@ -111,22 +134,22 @@ io.on('connection', function(socket){
 		}
 	});
 
+	// Save user data on disconnect
 	socket.on('disconnect', function() {
 		console.log("user " + socket.id + " disconnected");
 		fs.writeFile(_fileusers, JSON.stringify(users, null, 4));
 	});
 
-	//Any other input, echo back
+	// Any other input, echo back
 	socket.on('command', function(msg){
 		console.log(socket.id + ' sends: ' + msg);
 		io.to(socket.id).emit('message', msg);
 	});
 });
 
-http.listen(port, function(){
-	console.log('listening on *:' + port);
-});
-
+//=======
+// Other
+//=======
 setInterval(function() {
 	io.to('/hints').emit('message', 'Remember to leave feedback at github.com/ksami/muddy');
 }, 60000);
