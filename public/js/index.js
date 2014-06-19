@@ -17,11 +17,8 @@ $('#login').submit(function(){
   $('#password').val('');
   
   password = String(hash(password));
-  console.log("hashed: " + password);
   password = socketid + password;
-  console.log("salted hash: " + password);
   password = String(hash(password));
-  console.log("hashed salted hash: " + password);
 
   socket.emit('reqlogin', {'username': username, 'password': password});
 
@@ -37,21 +34,21 @@ $('#command').submit(function(){
   $('#messages').append($('<li>').text('> '+ msg));
   scrollToBottom('#messages');
   
-  var cmdtest = msg.split(" ");
-  if(cmdtest[0] === "/all") {
+  var cmdtest = msg.split(' ');
+  if(cmdtest[0] === '/all') {
     msg = msg.slice(cmdtest[0].length);
     socket.emit('chat', {'to': '/all', 'content': msg.trim()});
   }
-  else if("north".slice(0, cmdtest[0].length) === cmdtest[0]) {
+  else if('north'.slice(0, cmdtest[0].length) === cmdtest[0]) {
     socket.emit('move', 'north');
   }
-  else if("south".slice(0, cmdtest[0].length) === cmdtest[0]) {
+  else if('south'.slice(0, cmdtest[0].length) === cmdtest[0]) {
     socket.emit('move', 'south');
   }
-  else if("east".slice(0, cmdtest[0].length) === cmdtest[0]) {
+  else if('east'.slice(0, cmdtest[0].length) === cmdtest[0]) {
     socket.emit('move', 'east');
   }
-  else if("west".slice(0, cmdtest[0].length) === cmdtest[0]) {
+  else if('west'.slice(0, cmdtest[0].length) === cmdtest[0]) {
     socket.emit('move', 'west');
   }
   else {
@@ -85,7 +82,6 @@ socket.on('message', function(msg){
 });
 
 socket.on('map', function(data){
-  console.dir(data['map']);
   $('#mapname').text('=== ' + data['name'] + ' ===');
   $('#mapdesc').text(data['desc']);
   

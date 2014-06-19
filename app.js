@@ -49,7 +49,6 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 		return;
 	}
 	maps = JSON.parse(data);
-	//console.dir(maps);
 	
 	fs.readFile(_filemobs, 'utf8', function (err, data) {
 		if(err) {
@@ -57,12 +56,10 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 			return;
 		}
 		mobs = JSON.parse(data);
-		console.dir(mobs);
 
+		//add mobs to maps
 		for(var i=0; i<mobs.length; i++) {
-			console.log("mob at: " + mobs[i].at);
 			(maps[mobs[i].at].mobs).push(mobs[i]);
-			console.log(maps[mobs[i].at].mobs);
 		}
 	});
 });
@@ -73,11 +70,6 @@ fs.readFile(_fileusers, 'utf8', function (err, data) {
 		return;
 	}
 	users = JSON.parse(data);
-	console.dir(users);
-
-	for(user in users){
-		socketid[user.socketid] = user.nick;
-	}
 });
 
 
@@ -101,8 +93,7 @@ io.on('connection', function(socket){
 
 	// Request a login
 	socket.on('reqlogin', function(login){
-		console.log(login.username + ': ' + login.password);
-
+		
 		// if username already exists in database
 		if(users.hasOwnProperty(login.username)){
 			if(verifyPassword(login, socket.id) === true){
@@ -112,10 +103,10 @@ io.on('connection', function(socket){
 				//update users file
 				fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
 					if(err) {
-						console.log("User file error: " + err);
+						console.log('User file error: ' + err);
 					}
 					else {
-						console.log("Users.JSON save to " + _fileusers);
+						console.log('Users.JSON save to ' + _fileusers);
 						io.to(socket.id).emit('map', maps[users[login.username].at]);
 					}
 				});
@@ -128,6 +119,7 @@ io.on('connection', function(socket){
 				socket.join(login.username);
 
 				//trigger events
+				console.log(login.username + ' has logged in');
 				io.to(socket.id).emit('loginverified', login.username);
 				io.to(socket.id).emit('message', 'Welcome ' + login.username + '!');
 			}
@@ -150,15 +142,15 @@ io.on('connection', function(socket){
 		}
 		else {
 			//create the new user
-			users[login.username] = {"nick": login.username, "socketid": socket.id, "at": "m0-12"};
+			users[login.username] = {'nick': login.username, 'socketid': socket.id, 'at': 'm0-12'};
 
 			//update users file
 			fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
 				if(err) {
-					console.log("User file error: " + err);
+					console.log('User file error: ' + err);
 				}
 				else {
-					console.log("Users.JSON save to " + _fileusers);
+					console.log('Users.JSON save to ' + _fileusers);
 					io.to(socket.id).emit('map', maps[users[login.username].at]);
 				}
 			});
@@ -173,15 +165,12 @@ io.on('connection', function(socket){
 				pwds = JSON.parse(data);
 				pwds[login.username] = login.password;
 
-				console.dir(pwds);
-
 				fs.writeFile(_filepwd, JSON.stringify(pwds, null, 4), function(err) {
 					if(err) {
-						console.log("Password file error: " + err);
+						console.log('Password file error: ' + err);
 					}
 					else {
-						console.dir(pwds);
-						console.log("Password save");
+						console.log('Password save');
 					}
 				});
 			});
@@ -195,7 +184,6 @@ io.on('connection', function(socket){
 	// Add msg.from and send to msg.to
 	socket.on('chat', function(msg) {
 		msg.from = player.nick;
-		console.dir(msg);
 		io.to(msg.to).emit('chat', msg);
 	});
 
@@ -204,7 +192,7 @@ io.on('connection', function(socket){
 		if(maps[player.at].exits.hasOwnProperty(direction[0])) {
 			player.at = maps[player.at].exits[direction[0]];
 			io.to(socket.id).emit('map', maps[player.at]);
-			console.log(socketid[socket.id] + " moves: " + direction + " to " + player.at);
+			//console.log(socketid[socket.id] + ' moves: ' + direction + ' to ' + player.at);
 		}
 		else {
 			io.to(socket.id).emit('message', 'You cannot move in that direction');
@@ -213,7 +201,7 @@ io.on('connection', function(socket){
 
 	// Save user data on disconnect
 	socket.on('disconnect', function() {
-		console.log("user " + socket.id + " disconnected");
+		console.log('user ' + socket.id + ' disconnected');
 		fs.writeFile(_fileusers, JSON.stringify(users, null, 4));
 	});
 
@@ -227,6 +215,8 @@ io.on('connection', function(socket){
 //=======
 // Other
 //=======
+
+// Hashing function
 var hash = function(str) {
   var hash = 0, i, chr, len;
   if (str.length == 0) return hash;
@@ -238,19 +228,14 @@ var hash = function(str) {
   return hash;
 };
 
-//use synchronous file read to verify password
+// Use synchronous file read to verify password
 var verifyPassword = function(login, id) {
 	var pwds = {};
 	pwds = JSON.parse(fs.readFileSync(_filepwd, 'utf8'));
-	console.dir(pwds);
 
 	if(pwds.hasOwnProperty(login.username)) {
-		console.log("hashed: " + pwds[login.username]);
 		var pwd = id + pwds[login.username];
-		console.log("salted hash: " + pwd);
 		pwd = String(hash(pwd));
-		console.log("hashed salted hash: " + pwd);
-		console.log("comp: " + (pwd === login.password));
 
 		if(pwd === login.password) {
 			return true;

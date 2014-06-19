@@ -20,18 +20,18 @@ $('#register').submit(function(){
   else{
     //success
     password = String(hash(password));
-    socket.emit('register', {"username": username, "password": password});
+    socket.emit('register', {'username': username, 'password': password});
   }
   return false;
 });
 
 socket.on('regfailed', function(){
-  alert("Username already exists, please try again");
+  alert('Username already exists, please try again');
 });
 
 socket.on('regpass', function(){
-  alert("User successfully registered");
-  document.location.href = "/";
+  alert('User successfully registered');
+  document.location.href = '/';
 });
 
 var hash = function(str) {
