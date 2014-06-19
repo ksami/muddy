@@ -4,8 +4,9 @@
 
 // Environment configurables
 var port = 3000;
-var _filepwd = __dirname + '/.private/pwd'
+var _filepwd = __dirname + '/.private/pwd';
 var _fileindex = __dirname + '/public/index.html';
+var _fileregister = __dirname + '/public/register.html';
 var _filemaps = __dirname + '/json/mapss.json';
 var _fileusers = __dirname + '/json/users.json';
 var _filemobs = __dirname + '/json/mobs.json';
@@ -34,10 +35,13 @@ app.get('/',function(req, res){
 	res.sendfile(_fileindex);
 });
 
+app.get('/register',function(req, res){
+	res.sendfile(_fileregister);
+});
 
-//================
-// Read data files
-//===============
+//===============================
+// Read data files asynchronously
+//===============================
 
 fs.readFile(_filemaps, 'utf8', function (err, data) {
 	if(err) {
@@ -46,21 +50,23 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 	}
 	maps = JSON.parse(data);
 	//console.dir(maps);
-});
-fs.readFile(_filemobs, 'utf8', function (err, data) {
-	if(err) {
-		console.log('Mob file error: ' + err);
-		return;
-	}
-	mobs = JSON.parse(data);
-	console.dir(mobs);
+	
+	fs.readFile(_filemobs, 'utf8', function (err, data) {
+		if(err) {
+			console.log('Mob file error: ' + err);
+			return;
+		}
+		mobs = JSON.parse(data);
+		console.dir(mobs);
 
-	for(var i=0; i<mobs.length; i++) {
-		console.log("mob at: " + mobs[i].at);
-		(maps[mobs[i].at].mobs).push(mobs[i]);
-		console.log(maps[mobs[i].at].mobs);
-	}
+		for(var i=0; i<mobs.length; i++) {
+			console.log("mob at: " + mobs[i].at);
+			(maps[mobs[i].at].mobs).push(mobs[i]);
+			console.log(maps[mobs[i].at].mobs);
+		}
+	});
 });
+
 fs.readFile(_fileusers, 'utf8', function (err, data) {
 	if(err) {
 		console.log('User file error: ' + err);
@@ -93,6 +99,7 @@ io.on('connection', function(socket){
 	// Event handlers for events triggered by client
 	//==============================================
 
+	// Request a login
 	socket.on('reqlogin', function(login){
 		console.log(login.username + ': ' + login.password);
 
@@ -117,17 +124,31 @@ io.on('connection', function(socket){
 				socketid[socket.id] = login.username;
 				player = users[login.username];
 
-				console.log("pass");
+				//join own room
+				socket.join(login.username);
+
+				//trigger events
 				io.to(socket.id).emit('loginverified', login.username);
 				io.to(socket.id).emit('message', 'Welcome ' + login.username + '!');
 			}
 			else{
-				console.log("wrong password");
+				//wrong password
 				io.to(socket.id).emit('loginfailed');
 			}
 		}
-		// if doesn't exist, create new record
 		else{
+			//user does not exist
+			io.to(socket.id).emit('loginfailed');
+		}
+	});
+
+	// Register a new user
+	socket.on('register', function(login){
+		// if username already exists in database
+		if(users.hasOwnProperty(login.username)){
+			io.to(socket.id).emit('regfailed');
+		}
+		else {
 			//create the new user
 			users[login.username] = {"nick": login.username, "socketid": socket.id, "at": "m0-12"};
 
@@ -151,23 +172,22 @@ io.on('connection', function(socket){
 				}
 				pwds = JSON.parse(data);
 				pwds[login.username] = login.password;
-				fs.writeFile(_fileusers, JSON.stringify(pwds, null, 4), function(err) {
+
+				console.dir(pwds);
+
+				fs.writeFile(_filepwd, JSON.stringify(pwds, null, 4), function(err) {
 					if(err) {
 						console.log("Password file error: " + err);
 					}
 					else {
+						console.dir(pwds);
 						console.log("Password save");
 					}
 				});
 			});
 
-			//assign globals
-			socketid[socket.id] = login.username;
-			player = users[login.username];
-
-			console.log("pass - registration");
-			io.to(socket.id).emit('loginverified', login.username);
-			io.to(socket.id).emit('message', 'Welcome first time user ' + login.username + '!');
+			//trigger event to redirect client back to / to login
+			io.to(socket.id).emit('regpass');
 		}
 	});
 

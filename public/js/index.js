@@ -15,12 +15,13 @@ $('#login').submit(function(){
   var username = $('#username').val();
   var password = $('#password').val();
   if(username.length < 2){
-    $('#password').val('');
     alert('username must be 3 or more characters long');
   }
   else{
     socket.emit('reqlogin', {'username': username, 'password': password});
   }
+  $('#password').val('');
+
   return false;
 });
 
@@ -67,14 +68,12 @@ socket.on('socketid', function(id){
 
 socket.on('loginverified', function(username){
   nick = username;
-  $('#password').val('');
   $('#login').toggleClass('hide');
   $('#main').toggleClass('hide');
 });
 
 socket.on('loginfailed', function(){
-  $('#password').val('');
-  alert('Wrong password, please try again');
+  alert('Wrong username/password, please try again');
 })
 
 socket.on('message', function(msg){
