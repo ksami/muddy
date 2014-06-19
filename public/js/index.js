@@ -14,13 +14,11 @@ var nick;
 $('#login').submit(function(){
   var username = $('#username').val();
   var password = $('#password').val();
-  if(username.length < 2){
-    alert('username must be 3 or more characters long');
-  }
-  else{
-    socket.emit('reqlogin', {'username': username, 'password': password});
-  }
   $('#password').val('');
+  
+  password = String(hash(password));
+
+  socket.emit('reqlogin', {'username': username, 'password': password});
 
   return false;
 });
@@ -118,11 +116,11 @@ var scrollToBottom = function(id) {
   $(id).scrollTop($(id)[0].scrollHeight);
 }
 
-String.prototype.hashCode = function() {
+var hash = function(str) {
   var hash = 0, i, chr, len;
-  if (this.length == 0) return hash;
+  if (str.length == 0) return hash;
   for (i = 0, len = this.length; i < len; i++) {
-    chr   = this.charCodeAt(i);
+    chr   = str.charCodeAt(i);
     hash  = ((hash << 5) - hash) + chr;
     hash |= 0;
   }

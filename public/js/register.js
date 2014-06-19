@@ -7,8 +7,9 @@ var socket = io();
 $('#register').submit(function(){
   var username = $('#username').val();
   var password = $('#password').val();
+  $('#password').val('');
   var confirm = $('#confirm').val();
-  console.log("user is " + username + ", pass is " + password + ", confirm is " + confirm);
+  $('#confirm').val('');
 
   if(username.length < 2) {
     alert('Username has to be 3 or more characters');
@@ -18,12 +19,9 @@ $('#register').submit(function(){
   }
   else{
     //success
+    password = String(hash(password));
     socket.emit('register', {"username": username, "password": password});
   }
-
-  $('#password').val('');
-  $('#confirm').val('');
-
   return false;
 });
 
@@ -35,3 +33,14 @@ socket.on('regpass', function(){
   alert("User successfully registered");
   document.location.href = "/";
 })
+
+var hash = function(str) {
+  var hash = 0, i, chr, len;
+  if (str.length == 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = str.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  return hash;
+};

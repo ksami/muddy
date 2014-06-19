@@ -227,11 +227,11 @@ io.on('connection', function(socket){
 //=======
 // Other
 //=======
-String.prototype.hashCode = function() {
+var hash = function(str) {
   var hash = 0, i, chr, len;
-  if (this.length == 0) return hash;
+  if (str.length == 0) return hash;
   for (i = 0, len = this.length; i < len; i++) {
-    chr   = this.charCodeAt(i);
+    chr   = str.charCodeAt(i);
     hash  = ((hash << 5) - hash) + chr;
     hash |= 0;
   }
