@@ -105,7 +105,7 @@ io.on('connection', function(socket){
 
 		// if username already exists in database
 		if(users.hasOwnProperty(login.username)){
-			if(verifyPassword(login) === true){
+			if(verifyPassword(login, socket.id) === true){
 				//update user's socketid
 				users[login.username].socketid = socket.id;
 
@@ -230,7 +230,7 @@ io.on('connection', function(socket){
 var hash = function(str) {
   var hash = 0, i, chr, len;
   if (str.length == 0) return hash;
-  for (i = 0, len = this.length; i < len; i++) {
+  for (i = 0, len = str.length; i < len; i++) {
     chr   = str.charCodeAt(i);
     hash  = ((hash << 5) - hash) + chr;
     hash |= 0;
@@ -239,17 +239,24 @@ var hash = function(str) {
 };
 
 //use synchronous file read to verify password
-var verifyPassword = function(login) {
+var verifyPassword = function(login, id) {
 	var pwds = {};
 	pwds = JSON.parse(fs.readFileSync(_filepwd, 'utf8'));
 	console.dir(pwds);
 
-	if((pwds.hasOwnProperty(login.username)) && (pwds[login.username] === login.password)) {
-		return true;
+	if(pwds.hasOwnProperty(login.username)) {
+		console.log("hashed: " + pwds[login.username]);
+		var pwd = id + pwds[login.username];
+		console.log("salted hash: " + pwd);
+		pwd = String(hash(pwd));
+		console.log("hashed salted hash: " + pwd);
+		console.log("comp: " + (pwd === login.password));
+
+		if(pwd === login.password) {
+			return true;
+		}
 	}
-	else{
-		return false;
-	}
+	return false;
 };
 
 setInterval(function() {

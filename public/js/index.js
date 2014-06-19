@@ -17,6 +17,11 @@ $('#login').submit(function(){
   $('#password').val('');
   
   password = String(hash(password));
+  console.log("hashed: " + password);
+  password = socketid + password;
+  console.log("salted hash: " + password);
+  password = String(hash(password));
+  console.log("hashed salted hash: " + password);
 
   socket.emit('reqlogin', {'username': username, 'password': password});
 
@@ -119,7 +124,7 @@ var scrollToBottom = function(id) {
 var hash = function(str) {
   var hash = 0, i, chr, len;
   if (str.length == 0) return hash;
-  for (i = 0, len = this.length; i < len; i++) {
+  for (i = 0, len = str.length; i < len; i++) {
     chr   = str.charCodeAt(i);
     hash  = ((hash << 5) - hash) + chr;
     hash |= 0;

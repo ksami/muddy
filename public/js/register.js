@@ -32,12 +32,12 @@ socket.on('regfailed', function(){
 socket.on('regpass', function(){
   alert("User successfully registered");
   document.location.href = "/";
-})
+});
 
 var hash = function(str) {
   var hash = 0, i, chr, len;
   if (str.length == 0) return hash;
-  for (i = 0, len = this.length; i < len; i++) {
+  for (i = 0, len = str.length; i < len; i++) {
     chr   = str.charCodeAt(i);
     hash  = ((hash << 5) - hash) + chr;
     hash |= 0;
