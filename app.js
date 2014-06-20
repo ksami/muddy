@@ -227,6 +227,7 @@ io.on('connection', function(socket){
 			//var player2Combat = setInterval(function(){player2.damageOther(player1);}, player2.spd);
 
 			var hpCheck = setInterval(function(){
+				io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
 				console.log('player hp: ' + player.hp + ' target hp: ' + target.hp);
 				if(player.hp <= 0 || target.hp <= 0) {
 					clearInterval(playerCombat);

@@ -47,10 +47,15 @@ User.prototype.damageOther = function(target, skill) {
 	var rawDamage = Math.floor((Math.random() * this.atk.max) + this.atk.min);
 	console.log('raw is ' + rawDamage);
 	var reducedDamage = rawDamage - (Math.floor((Math.random() * target.def.max) + target.def.min));
+	
 	if(reducedDamage < 0) {
 		reducedDamage = 0;
 	}
 	target.hp = target.hp - reducedDamage;
+
+	if(target.hp < 0) {
+		target.hp = 0;
+	}
 
 	return reducedDamage;
 }

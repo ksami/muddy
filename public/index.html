@@ -23,34 +23,56 @@
         </tr>
       </table>
     </form>
-    <table id="main" class="hide">
-      <tr>
-        <td>
-          <ul id="messages"></ul>
-        </td>
-        <td>
-          <ul id="map">
-            <li id="mapname"></li>
-            <li id="mapdesc"></li>
-            <li id="mapexits"></li>
-            <li id="mapmobs"></li>
-            <br />
-            <li id="map0"></li>
-            <li id="map1"></li>
-            <li id="map2"></li>
-            <li id="map3"></li>
-            <li id="map4"></li>
-          </ul>
-        <td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <form id="command">
-            <input id="m" autocomplete="off" /><button>Send</button>
-          </form>
-        </td>
-      </tr>
-    </table>
+    <div id="main" class="hide">
+      <table>
+        <tr>
+          <td>
+            <ul class="box" id="messages"></ul>
+          </td>
+
+          <td>
+            <table class="box" id="info">
+              <tr>
+                <td>
+                  <ul>
+                    <li id="mapname"></li>
+                    <li id="mapdesc"></li>
+                    <li id="mapexits"></li>
+                    <li id="mapmobs"></li>
+                  </ul>
+                </td>
+                <td>
+                  <ul class="box">
+                    <li id="map0"></li>
+                    <li id="map1"></li>
+                    <li id="map2"></li>
+                    <li id="map3"></li>
+                    <li id="map4"></li>
+                  </ul>
+                </td>
+              </tr>
+
+              <tr>
+                <td colspan="2">
+                  <ul>
+                    <li id="player"></li>
+                    <li id="target"></li>
+                  </ul>
+                </td>
+              </tr>
+            </table>
+          </td>
+
+        </tr>
+        <tr>
+          <td colspan="2">
+            <form id="command">
+              <input id="m" autocomplete="off" /><button>Send</button>
+            </form>
+          </td>
+        </tr>
+      </table>
+    </div>
     
     <script src="/socket.io/socket.io.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>

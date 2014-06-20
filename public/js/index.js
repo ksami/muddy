@@ -103,6 +103,14 @@ socket.on('map', function(data){
   $('#map4').text(data['map'][4]);
 });
 
+socket.on('combatInfo', function(data){
+  var pdead = '', tdead = '';
+  if(data.playerhp <= 0) {pdead = '(dead)'};
+  if(data.targethp <= 0) {tdead = '(dead)'};
+  $('#player').text(data.playername + pdead + ': ' + data.playerhp);
+  $('#target').text(data.targetname + tdead + ': ' + data.targethp);
+});
+
 socket.on('chat', function(msg){
   var chatmsg = msg.from + ': ' + msg.content;
   $('#messages').append($('<li>').text(chatmsg));

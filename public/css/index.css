@@ -1,24 +1,18 @@
+.box {
+  padding: 5px;
+  overflow: auto;
+  font-family: "consolas";
+  border-color: black;
+  border-width: 1px;
+  border-style: solid;
+}
+ul{
+  padding-left: 5px;
+  list-style-type: none;
+}
 #messages {
   height: 300px;
   width: 640px;
-  padding: 5px;
-  overflow: auto;
-  font-family: "consolas";
-  border-color: black;
-  border-width: 1px;
-  border-style: solid;
-  list-style-type: none;
-}
-#map {
-  height: 300px;
-  width: 300px;
-  padding: 5px;
-  overflow: auto;
-  font-family: "consolas";
-  border-color: black;
-  border-width: 1px;
-  border-style: solid;
-  list-style-type: none; 
 }
 #mapname {
   font-style: underline;
