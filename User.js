@@ -9,7 +9,7 @@ skills = JSON.parse(fs.readFileSync(_fileskills, 'utf8'));
 //overload constructor based on type of first param
 function User(data, socketid) {
 	if(typeof data === String) {
-		this.nick = data;
+		this.name = data;
 		this.socketid = socketid;
 		this.at = 'm0-12';									//starting map
 		this.desc = 'Much plain. Such nondescript. Wow.';	//description shown when using look command on user
@@ -24,7 +24,7 @@ function User(data, socketid) {
 		this.defaultSkill = this.skills.kick;
 	}
 	else {
-		this.nick = data.nick;
+		this.name = data.name;
 		this.socketid = data.socketid;
 		this.at = data.at;
 		this.desc = data.desc;

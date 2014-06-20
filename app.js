@@ -188,7 +188,7 @@ io.on('connection', function(socket){
 	
 	// Add msg.from and send to msg.to
 	socket.on('chat', function(msg) {
-		msg.from = player.nick;
+		msg.from = player.name;
 		io.to(msg.to).emit('chat', msg);
 	});
 
@@ -215,7 +215,14 @@ io.on('connection', function(socket){
 
 			var playerCombat = setInterval(function(){
 				var dmg = player.damageOther(target);
-				io.to(socket.id).emit('message', 'You poke ' + target.name + ' for ' + dmg + ' damage');
+				var msg;
+				if(dmg === 0){
+					msg = 'You missed ' + target.name + '!';
+				}
+				else{
+					msg = 'You poke ' + target.name + ' for ' + dmg + ' damage';
+				}
+				io.to(socket.id).emit('message', msg);
 			}, player.spd);
 			//var player2Combat = setInterval(function(){player2.damageOther(player1);}, player2.spd);
 
