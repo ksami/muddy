@@ -34,6 +34,7 @@ $('#command').submit(function(){
   $('#messages').append($('<li>').text('> '+ msg));
   scrollToBottom('#messages');
   
+  //sorry excuse of a parser
   var cmdtest = msg.split(' ');
   if(cmdtest[0] === '/all') {
     msg = msg.slice(cmdtest[0].length);
@@ -50,6 +51,9 @@ $('#command').submit(function(){
   }
   else if('west'.slice(0, cmdtest[0].length) === cmdtest[0]) {
     socket.emit('move', 'west');
+  }
+  else if('kick'.slice(0, cmdtest[0].length) === cmdtest[0]) {
+    socket.emit('fight', {'skill': 'kick', 'target': 'slimelet'});
   }
   else {
     socket.emit('command', msg);  

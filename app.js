@@ -17,6 +17,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
+var User = require(__dirname + '/User.js');
 app.use(express.static(__dirname + '/public'));
 
 // Globals
@@ -69,7 +70,11 @@ fs.readFile(_fileusers, 'utf8', function (err, data) {
 		console.log('User file error: ' + err);
 		return;
 	}
-	users = JSON.parse(data);
+	var obj = JSON.parse(data);
+	
+	for(var key in obj) {
+		users[key] = new User(obj[key]);
+	}
 });
 
 
@@ -142,7 +147,8 @@ io.on('connection', function(socket){
 		}
 		else {
 			//create the new user
-			users[login.username] = {'nick': login.username, 'socketid': socket.id, 'at': 'm0-12'};
+			users[login.username] = new User(login.username, socket.id);
+			console.dir(users[login.username]);
 
 			//update users file
 			fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
@@ -151,7 +157,6 @@ io.on('connection', function(socket){
 				}
 				else {
 					console.log('Users.JSON save to ' + _fileusers);
-					io.to(socket.id).emit('map', maps[users[login.username].at]);
 				}
 			});
 
@@ -196,6 +201,21 @@ io.on('connection', function(socket){
 		}
 		else {
 			io.to(socket.id).emit('message', 'You cannot move in that direction');
+		}
+	});
+
+	// Combat
+	socket.on('fight', function(data){
+		console.log(data.target);
+		var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target});
+
+		if(mobsInMap !== []){
+			console.log('target exists');
+			var fightResult = player.fight(mobsInMap[0], data.skill);
+			io.to(socket.id).emit('message', 'You ' + fightResult);
+		}
+		else {
+			console.log('target missing');
 		}
 	});
 

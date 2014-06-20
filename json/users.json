@@ -1,12 +1,39 @@
 {
-    "ken": {
-        "nick": "ken",
-        "socketid": "K12Dt8wAUri2wlllAAAA",
-        "at": "m0-9"
-    },
-    "ksami": {
-        "nick": "ksami",
-        "socketid": "9PmVCkYPkflmoOANAAAC",
-        "at": "m0-19"
+    "qqq": {
+        "nick": "qqq",
+        "socketid": "07VcvO2J4DyHezeBAAAA",
+        "at": "m0-12",
+        "desc": "Much plain. Such nondescript. Wow.",
+        "hp": 100,
+        "atk": {
+            "min": 1,
+            "max": 5
+        },
+        "def": {
+            "min": 1,
+            "max": 5
+        },
+        "skills": {
+            "kick": {
+                "id": 0,
+                "name": "kick",
+                "desc": "Kick your opponent quite hard",
+                "isAttack": true,
+                "atk": {
+                    "min": 3,
+                    "max": 7
+                }
+            }
+        },
+        "defaultSkill": {
+            "id": 0,
+            "name": "kick",
+            "desc": "Kick your opponent quite hard",
+            "isAttack": true,
+            "atk": {
+                "min": 3,
+                "max": 7
+            }
+        }
     }
 }

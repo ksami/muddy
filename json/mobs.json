@@ -4,14 +4,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-6",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-10",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -19,14 +21,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-10",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-14",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -34,14 +38,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-16",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-3",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -49,14 +55,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-16",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-12",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -64,14 +72,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-1",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-5",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -79,14 +89,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
+        "isDead": false,
         "at": "m0-0",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -94,14 +106,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-0",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-9",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -109,14 +123,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-20",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-14",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -124,14 +140,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-0",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-11",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     },
     {
@@ -139,14 +157,16 @@
         "name": "slimelet",
         "desc": "young of a slime",
         "area": 0,
-        "at": "m0-21",
-        "combat": {
-            "hp": 100,
-            "atk": {
-                "min": 2,
-                "max": 5
-            },
-            "def": 0
+        "isDead": false,
+        "at": "m0-3",
+        "hp": 30,
+        "atk": {
+            "min": 2,
+            "max": 5
+        },
+        "def": {
+            "min": 0,
+            "max": 2
         }
     }
 ]
