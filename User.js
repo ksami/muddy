@@ -37,6 +37,7 @@ function User(data, socketid) {
 	}
 }
 
+// Return damage caused to other
 User.prototype.damageOther = function(target, skill) {
 	//if no skill param, default to defaultSkill
 	if(typeof skill !== 'undefined') {
@@ -50,6 +51,8 @@ User.prototype.damageOther = function(target, skill) {
 		reducedDamage = 0;
 	}
 	target.hp = target.hp - reducedDamage;
+
+	return reducedDamage;
 }
 
 // Expose User class to main module app.js

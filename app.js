@@ -18,7 +18,6 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
 var User = require(__dirname + '/User.js');
-var Combat = require(__dirname + '/Combat.js');
 app.use(express.static(__dirname + '/public'));
 
 // Globals
@@ -212,7 +211,23 @@ io.on('connection', function(socket){
 
 		if(mobsInMap !== []){
 			console.log('target exists');
-			var combatInstance = Combat(player, mobsInMap[0]);
+			var target = mobsInMap[0];
+
+			var playerCombat = setInterval(function(){
+				var dmg = player.damageOther(target);
+				io.to(socket.id).emit('message', 'You poke ' + target.name + ' for ' + dmg + ' damage');
+			}, player.spd);
+			//var player2Combat = setInterval(function(){player2.damageOther(player1);}, player2.spd);
+
+			var hpCheck = setInterval(function(){
+				console.log('player hp: ' + player.hp + ' target hp: ' + target.hp);
+				if(player.hp <= 0 || target.hp <= 0) {
+					clearInterval(playerCombat);
+					//clearInterval(player2Combat);
+					clearInterval(hpCheck);
+					io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
+				}
+			}, 500);
 		}
 		else {
 			console.log('target missing');
@@ -265,5 +280,5 @@ var verifyPassword = function(login, id) {
 };
 
 setInterval(function() {
-	io.to('/hints').emit('message', 'Remember to leave feedback at github.com/ksami/muddy');
+	io.to('/hints').emit('message', 'Welcome to muddy! Type @help for help');
 }, 60000);
