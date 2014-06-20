@@ -20,6 +20,7 @@ for(var i=0; i<10; i++) {
 	//places the mob at a random map from m0-0 to m0-24
 	mob.at = mapprefix + area + '-' + Math.floor(Math.random() * 25);
 	mob.hp = 30;
+	mob.spd = 500;
 	mob.atk = {'min': 2, 'max': 5};
 	mob.def = {'min': 0, 'max': 2};
 	mobs[i] = mob;

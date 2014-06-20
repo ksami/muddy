@@ -14,6 +14,7 @@ function User(data, socketid) {
 		this.at = 'm0-12';									//starting map
 		this.desc = 'Much plain. Such nondescript. Wow.';	//description shown when using look command on user
 		this.hp = 100;
+		this.spd = 1000;
 		this.atk = {'min': 1, 'max': 5};					//basic atk: poke
 		this.def = {'min': 1, 'max': 5};
 		//this.crit = {'multiplier': 1.1, 'chance': 0.1};
@@ -28,6 +29,7 @@ function User(data, socketid) {
 		this.at = data.at;
 		this.desc = data.desc;
 		this.hp = data.hp;
+		this.spd = data.spd;
 		this.atk = data.atk;
 		this.def = data.def;
 		this.skills = data.skills;
@@ -35,17 +37,19 @@ function User(data, socketid) {
 	}
 }
 
-User.prototype.fight = function(target, skill) {
+User.prototype.damageOther = function(target, skill) {
+	//if no skill param, default to defaultSkill
 	if(typeof skill !== 'undefined') {
 		skill = this.defaultSkill;
 	}
-	//skeleton
-	if((this.atk.max)*3 >= target.hp) {
-		return 'win';
+	//damage is discrete
+	var rawDamage = Math.floor((Math.random() * this.atk.max) + this.atk.min);
+	console.log('raw is ' + rawDamage);
+	var reducedDamage = rawDamage - (Math.floor((Math.random() * target.def.max) + target.def.min));
+	if(reducedDamage < 0) {
+		reducedDamage = 0;
 	}
-	else {
-		return 'lose';
-	}
+	target.hp = target.hp - reducedDamage;
 }
 
 // Expose User class to main module app.js

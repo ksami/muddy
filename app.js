@@ -18,6 +18,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
 var User = require(__dirname + '/User.js');
+var Combat = require(__dirname + '/Combat.js');
 app.use(express.static(__dirname + '/public'));
 
 // Globals
@@ -211,8 +212,7 @@ io.on('connection', function(socket){
 
 		if(mobsInMap !== []){
 			console.log('target exists');
-			var fightResult = player.fight(mobsInMap[0], data.skill);
-			io.to(socket.id).emit('message', 'You ' + fightResult);
+			var combatInstance = Combat(player, mobsInMap[0]);
 		}
 		else {
 			console.log('target missing');

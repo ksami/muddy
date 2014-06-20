@@ -1,10 +1,11 @@
 {
     "qqq": {
         "nick": "qqq",
-        "socketid": "07VcvO2J4DyHezeBAAAA",
+        "socketid": "e9DctUFsmBZMtgjbAAAC",
         "at": "m0-12",
         "desc": "Much plain. Such nondescript. Wow.",
         "hp": 100,
+        "spd": 1000,
         "atk": {
             "min": 1,
             "max": 5
