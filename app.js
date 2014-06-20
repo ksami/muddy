@@ -127,6 +127,11 @@ io.on('connection', function(socket){
 				console.log(login.username + ' has logged in');
 				io.to(socket.id).emit('loginverified', login.username);
 				io.to(socket.id).emit('message', 'Welcome ' + login.username + '!');
+				
+				//trigger map refresh every 1 second
+				setInterval(function() {
+					io.to(socket.id).emit('map', maps[player.at]);
+				}, 1000);
 			}
 			else{
 				//wrong password
@@ -209,7 +214,7 @@ io.on('connection', function(socket){
 		console.log(data.target);
 		var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target});
 
-		if(mobsInMap !== []){
+		if(mobsInMap !== [] && mobsInMap[0].isDead === false){
 			console.log('target exists');
 			var target = mobsInMap[0];
 
@@ -229,7 +234,9 @@ io.on('connection', function(socket){
 			var hpCheck = setInterval(function(){
 				io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
 				console.log('player hp: ' + player.hp + ' target hp: ' + target.hp);
-				if(player.hp <= 0 || target.hp <= 0) {
+
+				//death
+				if(target.isDead === true) {
 					clearInterval(playerCombat);
 					//clearInterval(player2Combat);
 					clearInterval(hpCheck);
@@ -239,6 +246,7 @@ io.on('connection', function(socket){
 		}
 		else {
 			console.log('target missing');
+			io.to(socket.id).emit('message', 'Target missing');
 		}
 	});
 

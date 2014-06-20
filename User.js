@@ -17,6 +17,7 @@ function User(data, socketid) {
 		this.spd = 1000;
 		this.atk = {'min': 1, 'max': 5};					//basic atk: poke
 		this.def = {'min': 1, 'max': 5};
+		this.isDead = false;
 		//this.crit = {'multiplier': 1.1, 'chance': 0.1};
 		this.skills = {
 			'kick': skills['kick']
@@ -32,6 +33,7 @@ function User(data, socketid) {
 		this.spd = data.spd;
 		this.atk = data.atk;
 		this.def = data.def;
+		this.isDead = data.isDead;
 		this.skills = data.skills;
 		this.defaultSkill = data.defaultSkill;
 	}
@@ -55,6 +57,7 @@ User.prototype.damageOther = function(target, skill) {
 
 	if(target.hp < 0) {
 		target.hp = 0;
+		target.isDead = true;
 	}
 
 	return reducedDamage;
