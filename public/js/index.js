@@ -52,8 +52,8 @@ $('#command').submit(function(){
   else if('west'.slice(0, cmdtest[0].length) === cmdtest[0]) {
     socket.emit('move', 'west');
   }
-  else if('kick'.slice(0, cmdtest[0].length) === cmdtest[0]) {
-    socket.emit('fight', {'skill': 'kick', 'target': 'slimelet'});
+  else if('poke'.slice(0, cmdtest[0].length) === cmdtest[0]) {
+    socket.emit('fight', {'skill': 'poke', 'target': 'slimelet'});
   }
   else {
     socket.emit('command', msg);  

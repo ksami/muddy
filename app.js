@@ -211,21 +211,21 @@ io.on('connection', function(socket){
 
 	// Combat
 	socket.on('fight', function(data){
-		console.log(data.target);
+		//check if target exists in map
 		var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target});
 
 		if(mobsInMap !== [] && mobsInMap[0].isDead === false){
-			console.log('target exists');
+			//assign target as the Mob object not just its name
 			var target = mobsInMap[0];
 
 			var playerCombat = setInterval(function(){
-				var dmg = player.damageOther(target);
+				var dmg = player.damageOther(target, data.skill);
 				var msg;
 				if(dmg === 0){
 					msg = 'You missed ' + target.name + '!';
 				}
 				else{
-					msg = 'You poke ' + target.name + ' for ' + dmg + ' damage';
+					msg = 'You ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage';
 				}
 				io.to(socket.id).emit('message', msg);
 			}, player.spd);

@@ -7,7 +7,6 @@ Actor = {
 	at: 'm0-12',
 	hp: 100,
 	spd: 1000,
-	atk: {min: 1, max: 5},
 	def: {min: 1, max: 5},
 	isDead: false,
 	skills: {
@@ -15,18 +14,23 @@ Actor = {
 			name: 'poke',
 			id: 1,				//unique across all skills
 			desc: '*poke poke*',
-			atk: {min: 3, max: 7}
+			atk: {min: 1, max: 5}
 		}
 	},
 	defaultSkill: 'poke',
 
+	//pass in target Actor object, skill name
+	//NOTE: no check for if skill exists
 	damageOther: function(other, skill) {
-			//if no skill param, default to defaultSkill
-		if(typeof skill !== 'undefined') {
-			skill = this.defaultSkill;
+		//if no skill param, default to defaultSkill
+		if(typeof skill === 'undefined') {
+			skill = this.skills[this.defaultSkill];
+		}
+		else{
+			skill = this.skills[skill];
 		}
 		//damage is discrete
-		var rawDamage = Math.floor((Math.random() * this.atk.max) + this.atk.min);
+		var rawDamage = Math.floor((Math.random() * skill.atk.max) + skill.atk.min);
 		console.log('raw is ' + rawDamage);
 		var reducedDamage = rawDamage - (Math.floor((Math.random() * other.def.max) + other.def.min));
 		
