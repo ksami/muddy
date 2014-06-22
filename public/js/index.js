@@ -2,7 +2,7 @@
  * Client-side JS
  */
 
-var socket = io();
+var socket = io.connect('http://muddy-ksami.rhcloud.com:8080');
 var socketid;
 var nick;
 
