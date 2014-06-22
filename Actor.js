@@ -1,6 +1,9 @@
 // Virtual class Actor from which Player and Mob inherit from
 
 Actor = {
+	//any property added/removed from here must be updated in User constructor too
+	//for rebuilding from JSON
+	//13 properties
 	name: 'default name',
 	id: 'default id',			//unique across actors
 	desc: 'default desc',
@@ -9,8 +12,9 @@ Actor = {
 	hp: 100,
 	spd: 1000,
 	def: {min: 1, max: 5},
-	recovery: {spd: 1000, amt: 1},
+	recovery: {spd: 2000, min: 0, max: 1},
 	isDead: false,
+	inCombat: false,
 	skills: {
 		poke: {
 			name: 'poke',
@@ -33,7 +37,6 @@ Actor = {
 		}
 		//damage is discrete
 		var rawDamage = Math.floor((Math.random() * skill.atk.max) + skill.atk.min);
-		console.log('raw is ' + rawDamage);
 		var reducedDamage = rawDamage - (Math.floor((Math.random() * other.def.max) + other.def.min));
 		
 		if(reducedDamage < 0) {
@@ -49,15 +52,18 @@ Actor = {
 		return reducedDamage;
 	},
 	recover: function() {
-		setInterval(function() {
-			console.log('recovering');
-			if(this.hp <= this.maxhp) {
-				this.hp += this.recovery.amt;
-			};
-		}, this.recovery.spd);
-	},
-	stopRecovery: function() {
-		clearInterval(this.recover);
+		if(this.hp < this.maxhp) {
+			if(this.recovery.max < 2) {
+				this.hp += 1;		//newbie help? until they decide to increase max recovery
+			}
+			else {
+				this.hp += (Math.floor((Math.random() * this.recovery.max) + this.recovery.min));
+			}
+
+			if(this.hp > this.maxhp) {
+				this.hp = this.maxhp;
+			}
+		}
 	}
 }
 

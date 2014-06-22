@@ -96,7 +96,7 @@ io.on('connection', function(socket){
 		if(users.hasOwnProperty(login.username)){
 			if(verifyPassword(login, socket.id) === true){
 				//update user's socketid
-				users[login.username].socketid = socket.id;
+				users[login.username].id = socket.id;
 
 				//update users file
 				updateUsersFile();
@@ -114,14 +114,17 @@ io.on('connection', function(socket){
 				io.to(socket.id).emit('message', 'Welcome ' + login.username + '!');
 				
 				//trigger map refresh every 1 second
-				setInterval(function() {
+				var intMapRefresh = setInterval(function() {
 					io.to(socket.id).emit('map', maps[player.at]);
 				}, 1000);
 
 				//start player recovery
-				player.recover();
+				var intPlayerRecovery = setInterval(function() {
+					player.recover();
+				}, player.recovery.spd);
+
 				//update player stats every 1 second
-				setInterval(function() {
+				var intStatsRefresh = setInterval(function() {
 					io.to(socket.id).emit('stats', player);
 				}, 1000);
 			}
@@ -196,71 +199,89 @@ io.on('connection', function(socket){
 
 	// Combat
 	socket.on('fight', function(data){
-		//check if target exists in map
-		var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target});
+		//allow only for attacking one but being attacked by many
+		if(player.inCombat === false) {
+			//check if target exists in map
+			var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target});
 
-		if(mobsInMap.length > 0){
-			//assign target as the Mob object not just its name
-			var target = mobsInMap[0];
+			if(mobsInMap.length > 0) {
+				//assign target as the Mob object not just its name
+				var target = mobsInMap[0];
 
-			if(target.isDead === false){
-				//start target recovery
-				target.recover();
+				if(target.isDead === false){
+					target.inCombat = true;
+					player.inCombat = true;
 
-				var playerCombat = setInterval(function(){
-					var dmg = player.damageOther(target, data.skill);
-					var msg;
-					if(dmg === 0){
-						msg = 'You missed ' + target.name + '!';
-					}
-					else{
-						msg = 'You ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage!';
-					}
-					io.to(socket.id).emit('message', msg);
-				}, player.spd);
-				
-				var targetCombat = setInterval(function(){
-					var dmg = target.damageOther(player);	//using target's default skill
-					var msg;
-					if(dmg === 0){
-						msg = target.name + ' missed you!';
-					}
-					else{
-						msg = target.name + ' ' + target.defaultSkill + 's you for ' + dmg + ' damage!';
-					}
-					io.to(socket.id).emit('message', msg);
-				}, target.spd);
+					//start target recovery
+					var intTargetRecovery = setInterval(function(){
+						target.recover();
+					}, target.recovery.spd);
 
-				var hpCheck = setInterval(function(){
-					io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
-					console.log('player hp: ' + player.hp + ' target hp: ' + target.hp);
+					var intPlayerCombat = setInterval(function(){
+						var dmg = player.damageOther(target, data.skill);
+						var msg;
+						if(dmg === 0){
+							msg = 'You missed ' + target.name + '!';
+						}
+						else{
+							msg = 'You ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage!';
+						}
+						io.to(socket.id).emit('message', msg);
+					}, player.spd);
+					
+					var intTargetCombat = setInterval(function(){
+						var dmg = target.damageOther(player);	//using target's default skill
+						var msg;
+						if(dmg === 0){
+							msg = target.name + ' missed you!';
+						}
+						else{
+							msg = target.name + ' ' + target.defaultSkill + 's you for ' + dmg + ' damage!';
+						}
+						io.to(socket.id).emit('message', msg);
+					}, target.spd);
 
-					//NOTE: assuming player does not die...
+					var intHpCheck = setInterval(function(){
+						io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
 
-					//death
-					if(target.isDead === true) {
-						//stop fighting dammit
-						clearInterval(targetCombat);
-						clearInterval(playerCombat);
-						clearInterval(hpCheck);
+						//NOTE: assuming player does not die...
 
-						target.onDeath(maps[target.at]);
-						target.stopRecovery();
-						console.dir(maps[target.at]);
-						io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
-					}
-				}, 500);
+						//death
+						if(target.isDead === true) {
+							//stop fighting dammit
+							clearInterval(intTargetCombat);
+							clearInterval(intTargetRecovery);
+							clearInterval(intPlayerCombat);
+							clearInterval(intHpCheck);
+
+							player.inCombat = false;
+							target.inCombat = false;
+
+							target.onDeath(maps[target.at]);
+							console.dir(maps[target.at]);
+							io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
+						}
+					}, 300);
+				}
+			}
+			else {
+				io.to(socket.id).emit('message', 'Target missing');
 			}
 		}
 		else {
-			console.log('target missing');
-			io.to(socket.id).emit('message', 'Target missing');
+			io.to(socket.id).emit('message', 'You are already in combat!');
 		}
 	});
 
 	// Save user data on disconnect
 	socket.on('disconnect', function() {
 		console.log('user ' + socket.id + ' disconnected');
+
+		//clear timers started on login
+		if(typeof intMapRefresh !== 'undefined') clearInterval(intMapRefresh);
+		if(typeof intStatsRefresh !== 'undefined') clearInterval(intStatsRefresh);
+		if(typeof intPlayerRecovery !== 'undefined') clearInterval(intPlayerRecovery);
+
 		updateUsersFile();
 	});
 

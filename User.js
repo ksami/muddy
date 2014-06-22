@@ -18,14 +18,18 @@ function User(data, socketid) {
 	//if taking user data from users.json to init new users
 	//because json doesn't store functions
 	else {
+		//rmb to update properties from Actor
+		//13 properties
 		this.name = data.name;
 		this.id = data.socketid;
 		this.at = data.at;
 		this.desc = data.desc;
+		this.maxhp = data.maxhp;
 		this.hp = data.hp;
 		this.spd = data.spd;
-		this.atk = data.atk;
+		this.recovery = data.recovery;
 		this.def = data.def;
+		this.inCombat = data.inCombat;
 		this.isDead = data.isDead;
 		this.skills = data.skills;
 		this.defaultSkill = data.defaultSkill;
