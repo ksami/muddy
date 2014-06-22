@@ -9,7 +9,6 @@ User.prototype.parent = Actor;
 //add on/overwrite properties initialised in Actor
 //overload constructor based on type of first param
 function User(data, socketid) {
-	console.log(typeof data);
 	//if using constructor to create a new user during registration
 	if((typeof data) === 'string') {
 		this.name = data;
@@ -32,6 +31,15 @@ function User(data, socketid) {
 		this.defaultSkill = data.defaultSkill;
 	}
 }
+
+// Own all inherited properties for storing in JSON
+User.prototype.toJSON = function() {
+	var result = Object.create(this);
+    for(var key in result) {
+        result[key] = result[key];
+    }
+    return result;
+};
 
 // Expose User class to main module app.js
 module.exports = User;

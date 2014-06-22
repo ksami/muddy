@@ -99,15 +99,7 @@ io.on('connection', function(socket){
 				users[login.username].socketid = socket.id;
 
 				//update users file
-				fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
-					if(err) {
-						console.log('User file error: ' + err);
-					}
-					else {
-						console.log('Users.JSON save to ' + _fileusers);
-						io.to(socket.id).emit('map', maps[users[login.username].at]);
-					}
-				});
+				updateUsersFile();
 
 				//assign globals
 				socketid[socket.id] = login.username;
@@ -156,14 +148,7 @@ io.on('connection', function(socket){
 			console.dir(users[login.username]);
 
 			//update users file
-			fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
-				if(err) {
-					console.log('User file error: ' + err);
-				}
-				else {
-					console.log('Users.JSON save to ' + _fileusers);
-				}
-			});
+			updateUsersFile();
 
 			//update pwd file
 			var pwds = {};
@@ -276,7 +261,7 @@ io.on('connection', function(socket){
 	// Save user data on disconnect
 	socket.on('disconnect', function() {
 		console.log('user ' + socket.id + ' disconnected');
-		fs.writeFile(_fileusers, JSON.stringify(users, null, 4));
+		updateUsersFile();
 	});
 
 	// Any other input, echo back
@@ -317,6 +302,25 @@ var verifyPassword = function(login, id) {
 	}
 	return false;
 };
+
+
+//update users file
+var updateUsersFile = function() {
+	var usersToJSON = {};
+
+	for(var user in users) {
+		usersToJSON[user] = users[user].toJSON();
+	}
+
+	fs.writeFile(_fileusers, JSON.stringify(usersToJSON, null, 4), function(err) {
+		if(err) {
+			console.log('User file error: ' + err);
+		}
+		else {
+			console.log('Users.JSON save to ' + _fileusers);
+		}
+	});
+}
 
 setInterval(function() {
 	io.to('/hints').emit('message', 'Welcome to muddy! Type @help for help');

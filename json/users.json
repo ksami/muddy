@@ -1,19 +1,44 @@
 {
     "qqq": {
         "name": "qqq",
-        "at": "m0-1",
         "desc": "Much plain. Such nondescript. Wow.",
+        "maxhp": 100,
+        "recovery": {
+            "spd": 1000,
+            "amt": 1
+        }
+    },
+    "aaa": {
+        "name": "aaa",
+        "desc": "Much plain. Such nondescript. Wow.",
+        "maxhp": 100,
+        "recovery": {
+            "spd": 1000,
+            "amt": 1
+        }
+    },
+    "www": {
+        "name": "www",
+        "id": "HJUpEwhsG3qn9BCyAAAA",
+        "desc": "Much plain. Such nondescript. Wow.",
+        "socketid": "_oeICKbWwIcVBzjBAAAB",
+        "at": "m0-12",
+        "maxhp": 100,
         "hp": 100,
         "spd": 1000,
         "def": {
             "min": 1,
             "max": 5
         },
+        "recovery": {
+            "spd": 1000,
+            "amt": 1
+        },
         "isDead": false,
         "skills": {
             "poke": {
-                "id": 0,
                 "name": "poke",
+                "id": 1,
                 "desc": "*poke poke*",
                 "atk": {
                     "min": 1,
@@ -22,14 +47,5 @@
             }
         },
         "defaultSkill": "poke"
-    },
-    "aaa": {},
-    "sss": {},
-    "ddd": {},
-    "fff": {},
-    "www": {
-        "name": "www",
-        "id": "qUNGBVuGHf0DqPYZAAAB",
-        "desc": "Much plain. Such nondescript. Wow."
     }
 }
