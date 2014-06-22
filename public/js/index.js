@@ -72,8 +72,9 @@ socket.on('socketid', function(id){
 
 socket.on('loginverified', function(username){
   nick = username;
-  $('#login').toggleClass('hide');
-  $('#main').toggleClass('hide');
+  //$('#login').toggleClass('hide');
+  //$('#main').toggleClass('hide');
+  $('#login').slideUp(600, function(){$('#main').slideDown(600);});
 });
 
 socket.on('loginfailed', function(){
@@ -81,7 +82,12 @@ socket.on('loginfailed', function(){
 })
 
 socket.on('message', function(msg){
-  $('#messages').append($('<li>').text(msg));
+  if(typeof msg.class === 'undefined') {
+    $('#messages').append($('<li>').text(msg));  
+  }
+  else {
+    $('#messages').append($('<li class="' + msg.class + '">').text(msg.msg));
+  }
   scrollToBottom('#messages');
 });
 

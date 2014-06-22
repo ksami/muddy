@@ -234,18 +234,19 @@ io.on('connection', function(socket){
 						else{
 							msg = ' ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage!';
 						}
-						io.to(player.at).emit('message', player.name + msg);
+						socket.broadcast.to(player.at).emit('message', {'msg': player.name + msg, 'class': 'blue'});
 						io.to(socket.id).emit('message', 'You' + msg);
 					}, player.spd);
 					
 					var intTargetCombat = setInterval(function(){
 						var dmg = target.damageOther(player);	//using target's default skill
-						var msg;
+						var msg = {};
 						if(dmg === 0){
 							msg = target.name + ' missed you!';
 						}
 						else{
-							msg = target.name + ' ' + target.defaultSkill + 's you for ' + dmg + ' damage!';
+							msg.class = 'red';
+							msg.msg = target.name + ' ' + target.defaultSkill + 's you for ' + dmg + ' damage!';
 						}
 						io.to(socket.id).emit('message', msg);
 					}, target.spd);
