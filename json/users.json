@@ -1,15 +1,11 @@
 {
     "qqq": {
         "name": "qqq",
-        "id": "TPUFIRYLI0dmp7PUAAAB",
+        "id": "L_LUwordyhlmymOlAAAA",
         "at": "m0-1",
         "desc": "Much plain. Such nondescript. Wow.",
         "hp": 100,
         "spd": 1000,
-        "atk": {
-            "min": 1,
-            "max": 5
-        },
         "def": {
             "min": 1,
             "max": 5
@@ -21,12 +17,12 @@
                 "name": "poke",
                 "desc": "*poke poke*",
                 "atk": {
-                    "min": 3,
-                    "max": 7
+                    "min": 1,
+                    "max": 5
                 }
             }
         },
         "defaultSkill": "poke",
-        "socketid": "8sugMNbxblh76CZnAAAC"
+        "socketid": "McjZveMdlfztVAfEAAAB"
     }
 }

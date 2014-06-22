@@ -95,9 +95,7 @@ socket.on('map', function(data){
   
   var mapmobs = [];
   for(var j=0; j<data['mobs'].length; j++) {
-    if(data['mobs'][j].isDead === false) {
-      mapmobs.push(data['mobs'][j].name);
-    }
+    mapmobs.push(data['mobs'][j].name);
   }
   $('#mapmobs').text('mobs: ' + mapmobs);
   $('#map0').text(data['map'][0]);

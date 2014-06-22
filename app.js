@@ -7,9 +7,8 @@ var port = 3000;
 var _filepwd = __dirname + '/.private/pwd';
 var _fileindex = __dirname + '/public/index.html';
 var _fileregister = __dirname + '/public/register.html';
-var _filemaps = __dirname + '/json/mapss.json';
+var _filemaps = __dirname + '/json/maps.json';
 var _fileusers = __dirname + '/json/users.json';
-var _filemobs = __dirname + '/json/mobs.json';
 
 // Dependencies
 var express = require('express');
@@ -24,7 +23,7 @@ app.use(express.static(__dirname + '/public'));
 var maps = {};
 var users = {};
 var socketid = {};
-var mobs = [];
+var mobs = require(__dirname + '/Mob.js');
 
 // Listen to <port>
 http.listen(port, function(){
@@ -51,18 +50,12 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 	}
 	maps = JSON.parse(data);
 	
-	fs.readFile(_filemobs, 'utf8', function (err, data) {
-		if(err) {
-			console.log('Mob file error: ' + err);
-			return;
-		}
-		mobs = JSON.parse(data);
-
-		//add mobs to maps
-		for(var i=0; i<mobs.length; i++) {
-			(maps[mobs[i].at].mobs).push(mobs[i]);
-		}
-	});
+	//add mobs to maps
+	for(var i=0; i<mobs.length; i++) {
+		(maps[mobs[i].at].mobs).push(mobs[i]);
+		//console.dir(maps[mobs[i].at]);
+		//console.log(maps[mobs[i].at].mobs[0].isDead);
+	}
 });
 
 fs.readFile(_fileusers, 'utf8', function (err, data) {
@@ -214,35 +207,39 @@ io.on('connection', function(socket){
 		//check if target exists in map
 		var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target});
 
-		if(mobsInMap !== [] && mobsInMap[0].isDead === false){
+		if(mobsInMap.length > 0){
 			//assign target as the Mob object not just its name
 			var target = mobsInMap[0];
 
-			var playerCombat = setInterval(function(){
-				var dmg = player.damageOther(target, data.skill);
-				var msg;
-				if(dmg === 0){
-					msg = 'You missed ' + target.name + '!';
-				}
-				else{
-					msg = 'You ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage';
-				}
-				io.to(socket.id).emit('message', msg);
-			}, player.spd);
-			//var player2Combat = setInterval(function(){player2.damageOther(player1);}, player2.spd);
+			if(target.isDead === false){
+				var playerCombat = setInterval(function(){
+					var dmg = player.damageOther(target, data.skill);
+					var msg;
+					if(dmg === 0){
+						msg = 'You missed ' + target.name + '!';
+					}
+					else{
+						msg = 'You ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage';
+					}
+					io.to(socket.id).emit('message', msg);
+				}, player.spd);
+				//var player2Combat = setInterval(function(){player2.damageOther(player1);}, player2.spd);
 
-			var hpCheck = setInterval(function(){
-				io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
-				console.log('player hp: ' + player.hp + ' target hp: ' + target.hp);
+				var hpCheck = setInterval(function(){
+					io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
+					console.log('player hp: ' + player.hp + ' target hp: ' + target.hp);
 
-				//death
-				if(target.isDead === true) {
-					clearInterval(playerCombat);
-					//clearInterval(player2Combat);
-					clearInterval(hpCheck);
-					io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
-				}
-			}, 500);
+					//death
+					if(target.isDead === true) {
+						clearInterval(playerCombat);
+						//clearInterval(player2Combat);
+						clearInterval(hpCheck);
+						target.onDeath(maps[target.at]);
+						console.dir(maps[target.at]);
+						io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
+					}
+				}, 500);
+			}
 		}
 		else {
 			console.log('target missing');

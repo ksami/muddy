@@ -1,4 +1,4 @@
-var _filemaps = __dirname + '/json/mapss.json';
+var _filemaps = __dirname + '/json/maps.json';
 
 var fs = require('fs');
 

@@ -13,6 +13,7 @@ function User(data, socketid) {
 	if(typeof data === String) {
 		this.name = data;
 		this.id = socketid;
+		this.desc = 'Much plain. Such nondescript. Wow.';
 	}
 	//if taking user data from users.json to init new users
 	//because json doesn't store functions
