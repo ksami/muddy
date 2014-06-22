@@ -219,21 +219,36 @@ io.on('connection', function(socket){
 						msg = 'You missed ' + target.name + '!';
 					}
 					else{
-						msg = 'You ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage';
+						msg = 'You ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage!';
 					}
 					io.to(socket.id).emit('message', msg);
 				}, player.spd);
-				//var player2Combat = setInterval(function(){player2.damageOther(player1);}, player2.spd);
+				
+				var targetCombat = setInterval(function(){
+					var dmg = target.damageOther(player);	//using target's default skill
+					var msg;
+					if(dmg === 0){
+						msg = target.name + ' missed you!';
+					}
+					else{
+						msg = target.name + ' ' + target.defaultSkill + 's you for ' + dmg + ' damage!';
+					}
+					io.to(socket.id).emit('message', msg);
+				}, target.spd);
 
 				var hpCheck = setInterval(function(){
 					io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
 					console.log('player hp: ' + player.hp + ' target hp: ' + target.hp);
 
+					//NOTE: assuming player does not die...
+
 					//death
 					if(target.isDead === true) {
+						//stop fighting dammit
+						clearInterval(targetCombat);
 						clearInterval(playerCombat);
-						//clearInterval(player2Combat);
 						clearInterval(hpCheck);
+
 						target.onDeath(maps[target.at]);
 						console.dir(maps[target.at]);
 						io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
