@@ -1,7 +1,7 @@
 {
     "qqq": {
         "name": "qqq",
-        "socketid": "hjDCIJmeHg_z6S3EAAAA",
+        "id": "-aQnyYiBAqetKy_EAAAA",
         "at": "m0-1",
         "desc": "Much plain. Such nondescript. Wow.",
         "hp": 100,
@@ -14,27 +14,19 @@
             "min": 1,
             "max": 5
         },
+        "isDead": false,
         "skills": {
-            "kick": {
+            "poke": {
                 "id": 0,
-                "name": "kick",
-                "desc": "Kick your opponent quite hard",
-                "isAttack": true,
+                "name": "poke",
+                "desc": "*poke poke*",
                 "atk": {
                     "min": 3,
                     "max": 7
                 }
             }
         },
-        "defaultSkill": {
-            "id": 0,
-            "name": "kick",
-            "desc": "Kick your opponent quite hard",
-            "isAttack": true,
-            "atk": {
-                "min": 3,
-                "max": 7
-            }
-        }
+        "defaultSkill": "poke",
+        "socketid": "TFYY7JwerysAqXl4AAAB"
     }
 }
