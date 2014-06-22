@@ -3,7 +3,8 @@
  */
 
 // Environment configurables
-var port = 3000;
+var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var _filepwd = __dirname + '/.private/pwd';
 var _fileindex = __dirname + '/public/index.html';
 var _fileregister = __dirname + '/public/register.html';
@@ -26,8 +27,8 @@ var socketid = {};
 var mobs = require(__dirname + '/Mob.js');
 
 // Listen to <port>
-http.listen(port, function(){
-	console.log('listening on *:' + port);
+http.listen(port, ipaddress, function(){
+	console.log('listening on ' + ipaddress + ':' + port);
 });
 
 // Route handler
