@@ -40,6 +40,9 @@ $('#command').submit(function(){
     msg = msg.slice(cmdtest[0].length);
     socket.emit('chat', {'to': '/all', 'content': msg.trim()});
   }
+  else if(cmdtest[0] === '@help') {
+    $('#messages').append($('<li>').text('Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke" to fight'));
+  }
   else if('north'.slice(0, cmdtest[0].length) === cmdtest[0]) {
     socket.emit('move', 'north');
   }

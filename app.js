@@ -276,7 +276,6 @@ io.on('connection', function(socket){
 							target.inCombat = false;
 
 							target.onDeath(maps[target.at]);
-							console.dir(maps[target.at]);
 							io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
 						}
 					}, 300);
