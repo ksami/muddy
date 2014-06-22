@@ -5,11 +5,11 @@
 // Environment configurables
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-var _filepwd = __dirname + '/.private/pwd';
+var _filepwd = (process.env.OPENSHIFT_DATA_DIR || __dirname) + '/.private/pwd';
 var _fileindex = __dirname + '/public/index.html';
 var _fileregister = __dirname + '/public/register.html';
 var _filemaps = __dirname + '/json/maps.json';
-var _fileusers = __dirname + '/json/users.json';
+var _fileusers = (process.env.OPENSHIFT_DATA_DIR || __dirname) + '/json/users.json';
 
 // Dependencies
 var express = require('express');
