@@ -30,8 +30,8 @@ function Slimelet() {
 
 	this.name = 'slimelet';
 	this.desc = 'Young of a slime. Duh.';
-	//places this at a random map from m0-0 to m0-24
-	this.at = mapprefix + this.area + '-' + Math.floor(Math.random() * 25);
+	this.at = mapprefix + this.area + '-' + Math.floor(Math.random() * 25);		//places this at a random map from m0-0 to m0-24
+	this.maxhp = 40;		//gets harder the longer the fight draws on
 	this.hp = 30;
 	this.spd = 500;
 	this.def = {'min': 0, 'max': 2};

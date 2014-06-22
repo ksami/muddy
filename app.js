@@ -125,6 +125,13 @@ io.on('connection', function(socket){
 				setInterval(function() {
 					io.to(socket.id).emit('map', maps[player.at]);
 				}, 1000);
+
+				//start player recovery
+				player.recover();
+				//update player stats every 1 second
+				setInterval(function() {
+					io.to(socket.id).emit('stats', player);
+				}, 1000);
 			}
 			else{
 				//wrong password
@@ -212,6 +219,9 @@ io.on('connection', function(socket){
 			var target = mobsInMap[0];
 
 			if(target.isDead === false){
+				//start target recovery
+				target.recover();
+
 				var playerCombat = setInterval(function(){
 					var dmg = player.damageOther(target, data.skill);
 					var msg;
@@ -250,6 +260,7 @@ io.on('connection', function(socket){
 						clearInterval(hpCheck);
 
 						target.onDeath(maps[target.at]);
+						target.stopRecovery();
 						console.dir(maps[target.at]);
 						io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
 					}

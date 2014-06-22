@@ -106,11 +106,19 @@ socket.on('map', function(data){
 });
 
 socket.on('combatInfo', function(data){
-  var pdead = '', tdead = '';
+  var pdead = '';
   if(data.playerhp <= 0) {pdead = '(dead)'};
-  if(data.targethp <= 0) {tdead = '(dead)'};
   $('#player').text(data.playername + pdead + ': ' + data.playerhp);
+
+  var tdead = '';
+  if(data.targethp <= 0) {tdead = '(dead)'};
   $('#target').text(data.targetname + tdead + ': ' + data.targethp);
+});
+
+socket.on('stats', function(player){
+  var pdead = '';
+  if(player.hp <= 0) {pdead = '(dead)'};
+  $('#player').text(player.name + pdead + ': ' + player.hp);
 });
 
 socket.on('chat', function(msg){

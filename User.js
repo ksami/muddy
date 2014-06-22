@@ -9,8 +9,9 @@ User.prototype.parent = Actor;
 //add on/overwrite properties initialised in Actor
 //overload constructor based on type of first param
 function User(data, socketid) {
+	console.log(typeof data);
 	//if using constructor to create a new user during registration
-	if(typeof data === String) {
+	if((typeof data) === 'string') {
 		this.name = data;
 		this.id = socketid;
 		this.desc = 'Much plain. Such nondescript. Wow.';

@@ -1,7 +1,6 @@
 {
     "qqq": {
         "name": "qqq",
-        "id": "xII4oTcifp0LPgOPAAAA",
         "at": "m0-1",
         "desc": "Much plain. Such nondescript. Wow.",
         "hp": 100,
@@ -22,7 +21,15 @@
                 }
             }
         },
-        "defaultSkill": "poke",
-        "socketid": "XaVtoXdzwWSmSFsVAAAA"
+        "defaultSkill": "poke"
+    },
+    "aaa": {},
+    "sss": {},
+    "ddd": {},
+    "fff": {},
+    "www": {
+        "name": "www",
+        "id": "qUNGBVuGHf0DqPYZAAAB",
+        "desc": "Much plain. Such nondescript. Wow."
     }
 }
