@@ -79,8 +79,6 @@ io.on('connection', function(socket){
 	
 	// When user first connects
 	socket.join(socket.id);
-	socket.join('/hints');
-	socket.join('/all');
 	console.log('user ' + socket.id + ' connected');
 	io.to(socket.id).emit('socketid', socket.id);
 	
@@ -105,8 +103,11 @@ io.on('connection', function(socket){
 				socketid[socket.id] = login.username;
 				player = users[login.username];
 
-				//join own room
+				//join channels
+				socket.join('/hints');
+				socket.join('/all');
 				socket.join(login.username);
+				socket.join(player.at);
 
 				//trigger events
 				console.log(login.username + ' has logged in');
@@ -188,9 +189,14 @@ io.on('connection', function(socket){
 	// Boundary checking then move player
 	socket.on('move', function(direction) {
 		if(maps[player.at].exits.hasOwnProperty(direction[0])) {
+			//leave previous map's channel
+			socket.leave(player.at);
+
 			player.at = maps[player.at].exits[direction[0]];
 			io.to(socket.id).emit('map', maps[player.at]);
-			//console.log(socketid[socket.id] + ' moves: ' + direction + ' to ' + player.at);
+			
+			//join this map's channel
+			socket.join(player.at);
 		}
 		else {
 			io.to(socket.id).emit('message', 'You cannot move in that direction');
@@ -199,7 +205,9 @@ io.on('connection', function(socket){
 
 	// Combat
 	socket.on('fight', function(data){
-		//allow only for attacking one but being attacked by many
+		//allow for attacking one but being attacked by many
+		//but due to the mysterious nature of mobs 
+		//they can attack many at once since players are the one who start combat
 		if(player.inCombat === false) {
 			//check if target exists in map
 			var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target});
@@ -221,12 +229,13 @@ io.on('connection', function(socket){
 						var dmg = player.damageOther(target, data.skill);
 						var msg;
 						if(dmg === 0){
-							msg = 'You missed ' + target.name + '!';
+							msg = ' missed ' + target.name + '!';
 						}
 						else{
-							msg = 'You ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage!';
+							msg = ' ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage!';
 						}
-						io.to(socket.id).emit('message', msg);
+						io.to(player.at).emit('message', player.name + msg);
+						io.to(socket.id).emit('message', 'You' + msg);
 					}, player.spd);
 					
 					var intTargetCombat = setInterval(function(){
