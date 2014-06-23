@@ -107,17 +107,17 @@ io.on('connection', function(socket){
 				//join channels
 				socket.join('/hints');
 				socket.join('/all');
-				socket.join(login.username);
+				socket.join(player.name);
 				socket.join(player.at);
 
 				//trigger events
-				console.log(login.username + ' has logged in');
-				io.to(socket.id).emit('loginverified', login.username);
-				io.to(socket.id).emit('message', 'Welcome ' + login.username + '!');
+				console.log(player.name + ' has logged in');
+				io.to(player.name).emit('loginverified', player.name);
+				io.to('/all').emit('message', 'Welcome ' + player.name + '!');
 				
 				//trigger map refresh every 1 second
 				var intMapRefresh = setInterval(function() {
-					io.to(socket.id).emit('map', maps[player.at]);
+					io.to(player.name).emit('map', maps[player.at]);
 				}, 1000);
 
 				//start player recovery
@@ -127,7 +127,7 @@ io.on('connection', function(socket){
 
 				//update player stats every 1 second
 				var intStatsRefresh = setInterval(function() {
-					io.to(socket.id).emit('stats', player);
+					io.to(player.name).emit('stats', player);
 				}, 1000);
 			}
 			else{
@@ -194,13 +194,13 @@ io.on('connection', function(socket){
 			socket.leave(player.at);
 
 			player.at = maps[player.at].exits[direction[0]];
-			io.to(socket.id).emit('map', maps[player.at]);
+			io.to(player.name).emit('map', maps[player.at]);
 			
 			//join this map's channel
 			socket.join(player.at);
 		}
 		else {
-			io.to(socket.id).emit('message', 'You cannot move in that direction');
+			io.to(player.name).emit('message', 'You cannot move in that direction');
 		}
 	});
 
@@ -237,7 +237,7 @@ io.on('connection', function(socket){
 							msg = ' ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage!';
 						}
 						socket.broadcast.to(player.at).emit('message', {'msg': player.name + msg, 'class': 'blue'});
-						io.to(socket.id).emit('message', 'You' + msg);
+						io.to(player.name).emit('message', 'You' + msg);
 					}, player.spd);
 					
 					//start target combat
@@ -251,12 +251,12 @@ io.on('connection', function(socket){
 							msg.class = 'red';
 							msg.msg = target.name + ' ' + target.defaultSkill + 's you for ' + dmg + ' damage!';
 						}
-						io.to(socket.id).emit('message', msg);
+						io.to(player.name).emit('message', msg);
 					}, target.spd);
 
 					//start hp check for both
 					var intHpCheck = setInterval(function(){
-						io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
+						io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
 
 						//NOTE: assuming player does not die...
 
@@ -271,17 +271,17 @@ io.on('connection', function(socket){
 							player.inCombat = false;
 							target.inCombat = false;
 
-							io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
+							io.to(player.name).emit('message', 'Victory! You have defeated ' + target.name);
 						}
 					}, 300);
 				}
 			}
 			else {
-				io.to(socket.id).emit('message', 'Target missing');
+				io.to(player.name).emit('message', 'Target missing');
 			}
 		}
 		else {
-			io.to(socket.id).emit('message', 'You are already in combat!');
+			io.to(player.name).emit('message', 'You are already in combat!');
 		}
 	});
 
@@ -294,13 +294,17 @@ io.on('connection', function(socket){
 		if(typeof intStatsRefresh !== 'undefined') clearInterval(intStatsRefresh);
 		if(typeof intPlayerRecovery !== 'undefined') clearInterval(intPlayerRecovery);
 
-		updateUsersFile();
+		//if logged in
+		if(typeof player !== 'undefined') {
+			io.to('/all').emit(player.name + ' has logged out');
+			updateUsersFile();
+		}
 	});
 
 	// Any other input, echo back
 	socket.on('command', function(msg){
-		console.log(socket.id + ' sends: ' + msg);
-		io.to(socket.id).emit('message', msg);
+		console.log(player.name + ' sends: ' + msg);
+		io.to(player.name).emit('message', msg);
 	});
 });
 
