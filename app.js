@@ -388,5 +388,6 @@ var serverShutdown = function() {
 	}, 10*1000);
 }
 
+//does not capture on cygwin windows
 process.on('SIGINT', serverShutdown);
 process.on('SIGTERM', serverShutdown);
