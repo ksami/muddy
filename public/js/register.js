@@ -25,6 +25,11 @@ $('#register').submit(function(){
   return false;
 });
 
+socket.on('servershutdown' ,function(){
+  alert('server restarting');
+  document.location.href = '/';
+});
+
 socket.on('regfailed', function(){
   alert('Username already exists, please try again');
 });

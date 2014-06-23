@@ -369,3 +369,24 @@ var updateUsersFile = function() {
 setInterval(function() {
 	io.to('/hints').emit('message', 'Welcome to muddy! Type @help for help');
 }, 60000);
+
+//server shutdown
+var serverShutdown = function() {
+	console.log('Received kill signal, shutting down gracefully');
+	io.sockets.emit('servershutdown');
+
+	//prevent new connections, close existing
+	http.close(function() {
+		console.log('Closing connections');
+		process.exit()
+	});
+
+	//if after 10 seconds, force close
+	setTimeout(function() {
+		console.error('Could not close connections in time, forcefully shutting down');
+		process.exit()
+	}, 10*1000);
+}
+
+process.on('SIGINT', serverShutdown);
+process.on('SIGTERM', serverShutdown);

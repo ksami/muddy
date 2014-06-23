@@ -74,6 +74,11 @@ $('#command').submit(function(){
 //==============================================
 // Event handlers for events triggered by server
 //==============================================
+socket.on('servershutdown' ,function(){
+  alert('server restarting');
+  document.location.href = '/';
+});
+
 socket.on('socketid', function(id){
   socketid = id;
 });
