@@ -226,6 +226,7 @@ io.on('connection', function(socket){
 						target.recover();
 					}, target.recovery.spd);
 
+					//start player combat
 					var intPlayerCombat = setInterval(function(){
 						var dmg = player.damageOther(target, data.skill);
 						var msg;
@@ -239,6 +240,7 @@ io.on('connection', function(socket){
 						io.to(socket.id).emit('message', 'You' + msg);
 					}, player.spd);
 					
+					//start target combat
 					var intTargetCombat = setInterval(function(){
 						var dmg = target.damageOther(player);	//using target's default skill
 						var msg = {};
@@ -252,6 +254,7 @@ io.on('connection', function(socket){
 						io.to(socket.id).emit('message', msg);
 					}, target.spd);
 
+					//start hp check for both
 					var intHpCheck = setInterval(function(){
 						io.to(socket.id).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
 
@@ -268,7 +271,6 @@ io.on('connection', function(socket){
 							player.inCombat = false;
 							target.inCombat = false;
 
-							target.onDeath(maps[target.at]);
 							io.to(socket.id).emit('message', 'Victory! You have defeated ' + target.name);
 						}
 					}, 300);

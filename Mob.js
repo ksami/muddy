@@ -37,8 +37,10 @@ function Mob(id, index, area) {
 	//=============
 	// Mob-specific
 	//
+	this.inithp = 100;
 	this.index = index;		//like pokedex
 	this.area = area;
+	this.respawnTime = 20000;
 
 
 	//*********
@@ -68,9 +70,8 @@ function Mob(id, index, area) {
 		}
 		other.hp = other.hp - reducedDamage;
 
-		if(other.hp < 0) {
-			other.hp = 0;
-			other.isDead = true;
+		if(other.hp <= 0) {
+			other.onDeath();
 		}
 
 		return reducedDamage;
@@ -89,14 +90,27 @@ function Mob(id, index, area) {
 			}
 		}
 	}
+	//==
+	// Same name, diff function from Mob
+	//
+	this.onDeath = function() {
+		//die
+		this.hp = 0;
+		this.isDead = true;
+
+		//drop items etc.
+
+		//respawn
+		var self = this;
+		setTimeout(function(){self.respawn(self);}, self.respawnTime);
+	}
 
 	//==============
 	// Mob-specific
 	//
-	this.onDeath = function(map) {
-		//remove this from map
-		var i = map.mobs.indexOf(this);
-		map.mobs.splice(i, 1);
+	this.respawn = function(self) {
+		self.hp = self.inithp;
+		self.isDead = false;
 	}
 }
 
@@ -117,7 +131,8 @@ function Slimelet(id) {
 	this.desc = 'Young of a slime. Duh.';
 	this.at = mapprefix + this.area + '-' + Math.floor(Math.random() * 25);		//places this at a random map from m0-0 to m0-24
 	this.maxhp = 50;		//gets harder the longer the fight draws on
-	this.hp = 30;
+	this.inithp = 30;
+	this.hp = this.inithp;
 	this.spd = 500;
 	this.def = {'min': 0, 'max': 4};
 	this.recovery.max = 2;

@@ -4,7 +4,7 @@
 
 // IMPT: Use 2nd line when deploying
 //var socket = io();
-var socket = io.connect('ws://muddy-ksami.rhcloud.com:8000');
+var socket = io.connect('http://muddy-ksami.rhcloud.com:8000');
 var socketid;
 var nick;
 
@@ -106,7 +106,9 @@ socket.on('map', function(data){
   
   var mapmobs = [];
   for(var j=0; j<data['mobs'].length; j++) {
-    mapmobs.push(data['mobs'][j].name);
+    if(data['mobs'][j].isDead === false) {
+      mapmobs.push(data['mobs'][j].name);
+    }
   }
   $('#mapmobs').text('mobs: ' + mapmobs);
   $('#map0').text(data['map'][0]);

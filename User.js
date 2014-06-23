@@ -48,7 +48,7 @@ function User(data, socketid) {
 		this.spd = data.spd;
 		this.recovery = data.recovery;
 		this.def = data.def;
-		this.inCombat = data.inCombat;
+		this.inCombat = false;
 		this.isDead = data.isDead;
 		this.skills = data.skills;
 		this.defaultSkill = data.defaultSkill;
@@ -81,9 +81,8 @@ function User(data, socketid) {
 		}
 		other.hp = other.hp - reducedDamage;
 
-		if(other.hp < 0) {
-			other.hp = 0;
-			other.isDead = true;
+		if(other.hp <= 0) {
+			other.onDeath();
 		}
 
 		return reducedDamage;
@@ -101,6 +100,13 @@ function User(data, socketid) {
 				this.hp = this.maxhp;
 			}
 		}
+	}
+	//==
+	// Same name, diff function from Mob
+	//
+	this.onDeath = function() {
+		this.hp = 0;
+		this.isDead = true;
 	}
 }
 
