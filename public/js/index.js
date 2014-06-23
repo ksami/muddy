@@ -3,8 +3,8 @@
  */
 
 // IMPT: Use 2nd line when deploying
-var socket = io();
-//var socket = io.connect('http://muddy-ksami.rhcloud.com:8000');
+//var socket = io();
+var socket = io.connect('http://muddy-ksami.rhcloud.com:8000');
 var socketid;
 var nick;
 

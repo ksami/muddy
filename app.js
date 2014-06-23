@@ -283,6 +283,7 @@ io.on('connection', function(socket){
 							player.inCombat = false;
 							target.inCombat = false;
 
+							socket.broadcast.to(player.at).emit('message', {'msg': player.name + ' has defeated ' + target.name, 'class': 'blue'});
 							io.to(player.name).emit('message', 'Victory! You have defeated ' + target.name);
 						}
 					}, 300);
