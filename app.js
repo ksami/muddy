@@ -26,13 +26,6 @@ var users = {};
 var socketid = {};
 var mobs = require(__dirname + '/Mob.js');
 
-//magic
-app.all('/*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
-});
-
 // Listen to <port>
 http.listen(port, ipaddress, function(){
 	console.log('listening on ' + ipaddress + ':' + port);
@@ -344,13 +337,7 @@ var verifyPassword = function(login, id) {
 
 //update users file
 var updateUsersFile = function() {
-	var usersToJSON = {};
-
-	for(var user in users) {
-		usersToJSON[user] = users[user].toJSON();
-	}
-
-	fs.writeFile(_fileusers, JSON.stringify(usersToJSON, null, 4), function(err) {
+	fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
 		if(err) {
 			console.log('User file error: ' + err);
 		}
