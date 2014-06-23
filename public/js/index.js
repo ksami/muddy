@@ -3,8 +3,8 @@
  */
 
 // IMPT: Use 2nd line when deploying
-//var socket = io();
-var socket = io.connect('http://muddy-ksami.rhcloud.com:8000');
+var socket = io();
+//var socket = io.connect('http://muddy-ksami.rhcloud.com:8000');
 var socketid;
 var nick;
 
@@ -38,7 +38,10 @@ $('#command').submit(function(){
   
   //sorry excuse of a parser
   var cmdtest = msg.split(' ');
-  if(cmdtest[0] === '/all') {
+  if(cmdtest[0].length === 0) {
+    socket.emit('command', msg);
+  }
+  else if(cmdtest[0] === '/all') {
     msg = msg.slice(cmdtest[0].length);
     socket.emit('chat', {'to': '/all', 'content': msg.trim()});
   }
