@@ -3,26 +3,30 @@ var _filemaps = __dirname + '/json/maps.json';
 var fs = require('fs');
 
 function map(area, id, name, desc) {
-	this.area = area,
-	this.id = id,
-	this.name = name,
-	this.desc = desc,
+	this.area = area;
+	this.id = id;
+	this.name = name;
+	this.desc = desc;
 	this.map = [
-		"vvvvv",
-		"vvvvv",
-		"vvvvv",
-		"vvvvv",
-		"vvvvv"
-	],
-	this.mobs = []
+		'vvvvv',
+		'vvvvv',
+		'vvvvv',
+		'vvvvv',
+		'vvvvv'
+	];
+	this.mobs = [];
+	this.users = {};
 }
 
 var maps = {};
 
+//
+// Area 0
+//
 for(var i=0; i<25; i++) {
 	var prefix = 'm';
 	var area = 0;
-	var newmap = new map(area, i, "name", "desc");
+	var newmap = new map(area, i, prefix + area + '-' + i , 'grass, grass, grass');
 	
 	var exits = {};
 	if((i%5)-1>=0) {
@@ -39,7 +43,7 @@ for(var i=0; i<25; i++) {
 	}
 	newmap['exits'] = exits;
 
-	var playerpos = "vvvvv";
+	var playerpos = 'vvvvv';
 	playerpos = playerpos.substr(0,i%5) + 'X' + playerpos.substr((i%5)+1);
 	newmap.map[Math.floor(i/5)] = playerpos;
 	console.dir(newmap);
@@ -48,9 +52,9 @@ for(var i=0; i<25; i++) {
 
 fs.writeFile(_filemaps, JSON.stringify(maps, null, 4), function(err) {
 	if(err) {
-		console.log("User file error: " + err);
+		console.log('User file error: ' + err);
 	}
 	else {
-		console.log("Users.JSON save to " + _filemaps);
+		console.log('Users.JSON save to ' + _filemaps);
 	}
 })

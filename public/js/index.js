@@ -103,6 +103,10 @@ socket.on('map', function(data){
   var mapexits = [];
   for(var k in data['exits']) mapexits.push(k);
   $('#mapexits').text('exits: ' + mapexits);
+
+  var mapusers = [];
+  for(var i in data['users']) mapusers.push(i);
+  $('#mapusers').text('players: ' + mapusers);
   
   var mapmobs = [];
   for(var j=0; j<data['mobs'].length; j++) {
@@ -111,6 +115,7 @@ socket.on('map', function(data){
     }
   }
   $('#mapmobs').text('mobs: ' + mapmobs);
+
   $('#map0').text(data['map'][0]);
   $('#map1').text(data['map'][1]);
   $('#map2').text(data['map'][2]);

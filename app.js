@@ -54,21 +54,26 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 	//add mobs to maps
 	for(var i=0; i<mobs.length; i++) {
 		(maps[mobs[i].at].mobs).push(mobs[i]);
-		//console.dir(maps[mobs[i].at]);
-		//console.log(maps[mobs[i].at].mobs[0].isDead);
 	}
-});
 
-fs.readFile(_fileusers, 'utf8', function (err, data) {
-	if(err) {
-		console.log('User file error: ' + err);
-		return;
-	}
-	var obj = JSON.parse(data);
-	
-	for(var key in obj) {
-		users[key] = new User(obj[key]);
-	}
+	//read stored user data
+	fs.readFile(_fileusers, 'utf8', function (err, data) {
+		if(err) {
+			console.log('User file error: ' + err);
+			return;
+		}
+		//add to users global
+		var obj = JSON.parse(data);
+		for(var name in obj) {
+			users[name] = new User(obj[name]);
+		}
+
+		//add users to maps
+		for(var name in users) {
+			(maps[users[name].at]).users[name] = users[name];
+			console.dir((maps[users[name].at]).users);
+		}
+	});
 });
 
 
@@ -193,10 +198,19 @@ io.on('connection', function(socket){
 			//leave previous map's channel
 			socket.leave(player.at);
 
+			//leave previous map
+			delete (maps[player.at]).users[player.name];
+
+			//move position to next map
 			player.at = maps[player.at].exits[direction[0]];
+
+			//add player to map
+			(maps[player.at]).users[player.name] = player;
+
+			//update map
 			io.to(player.name).emit('map', maps[player.at]);
 			
-			//join this map's channel
+			//join next map's channel
 			socket.join(player.at);
 		}
 		else {
