@@ -79,7 +79,7 @@ socket.on('loginverified', function(username){
   nick = username;
   //$('#login').toggleClass('hide');
   //$('#main').toggleClass('hide');
-  $('#login').slideUp(600, function(){$('#main').slideDown(600);});
+  $('#login').slideUp(400, function(){$('#main').slideDown(600);});
 });
 
 socket.on('loginfailed', function(){

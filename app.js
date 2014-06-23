@@ -44,6 +44,7 @@ app.get('/register',function(req, res){
 // Read data files asynchronously
 //===============================
 
+//read stored maps data
 fs.readFile(_filemaps, 'utf8', function (err, data) {
 	if(err) {
 		console.log('Map file error: ' + err);
@@ -55,25 +56,19 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 	for(var i=0; i<mobs.length; i++) {
 		(maps[mobs[i].at].mobs).push(mobs[i]);
 	}
+});
 
-	//read stored user data
-	fs.readFile(_fileusers, 'utf8', function (err, data) {
-		if(err) {
-			console.log('User file error: ' + err);
-			return;
-		}
-		//add to users global
-		var obj = JSON.parse(data);
-		for(var name in obj) {
-			users[name] = new User(obj[name]);
-		}
-
-		//add users to maps
-		for(var name in users) {
-			(maps[users[name].at]).users[name] = users[name];
-			console.dir((maps[users[name].at]).users);
-		}
-	});
+//read stored user data
+fs.readFile(_fileusers, 'utf8', function (err, data) {
+	if(err) {
+		console.log('User file error: ' + err);
+		return;
+	}
+	//add to users global
+	var obj = JSON.parse(data);
+	for(var name in obj) {
+		users[name] = new User(obj[name]);
+	}
 });
 
 
@@ -108,6 +103,9 @@ io.on('connection', function(socket){
 				//assign globals
 				socketid[socket.id] = login.username;
 				player = users[login.username];
+				
+				//add player to map
+				(maps[player.at]).users[player.name] = player;
 
 				//join channels
 				socket.join('/hints');

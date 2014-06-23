@@ -16,6 +16,7 @@ function map(area, id, name, desc) {
 	];
 	this.mobs = [];
 	this.users = {};
+	//this.envrionmenteffects = {};
 }
 
 var maps = {};
