@@ -37,6 +37,8 @@ function Slimelet(id) {
 	this.hp = 30;
 	this.spd = 500;
 	this.def = {'min': 0, 'max': 4};
+
+	//BUG: ITS CHANGING Actor WHICH CHANGES USER TOO WTH
 	this.recovery.max = 2;
 	this.recovery.spd = 1000;
 }

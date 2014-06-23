@@ -2,7 +2,9 @@
  * Client-side JS
  */
 
-var socket = io.connect('http://muddy-ksami.rhcloud.com:8000');
+// IMPT: Use 2nd line when deploying
+var socket = io();
+//var socket = io.connect('http://muddy-ksami.rhcloud.com:8000');
 var socketid;
 var nick;
 
@@ -89,7 +91,7 @@ socket.on('message', function(msg){
     $('#messages').append($('<li>').text(msg));  
   }
   else {
-    $('#messages').append($('<li class="' + msg.class + '">').text(msg.msg));
+    $('#messages').append($('<li>').text(msg.msg).addClass(msg.class));
   }
   scrollToBottom('#messages');
 });
