@@ -37,55 +37,7 @@ $('#command').submit(function(){
   $('#messages').append($('<li>').text('> '+ msg));
   scrollToBottom('#messages');
   
-  var sortedValidCmds = [
-    "/all",
-    "@help",
-    "east",
-    "north",
-    "poke",
-    "should",
-    "soot",
-    "south",
-    "sulli",
-    "west"
-  ];
-  
-  //var sortedValidCmds = ['aaa','aab','aba','abb'];
-  //var sortedValidCmds = ['aaa','bbb','ddd','eee'];
-
-  var i=0, j=0;
-  var foundIndex=null;
-  var isFound = false;
-
-  var input = msg.split(' ');
-  var command = input[0].toLowerCase();
-
-  //match any substring of a command
-  for(i=0; i<sortedValidCmds.length; i++) {
-    
-    //char by char comparison
-    for(j=0; command[j] === sortedValidCmds[i][j]; j++) {
-      if(j === command.length-1) {
-        isFound = true;
-        break;
-      }
-    }
-        
-    //stop searching if past the char since sorted array
-    //eg. key: ccc; arr: aaa, bbb, ddd, eee; expected: break at ddd
-    //eg. key: aac; arr: aaa, aab, aba, abb; expected: break at aba
-    if(command.charCodeAt(j) < sortedValidCmds[i].charCodeAt(j)) {
-      console.log('charcode called');
-      break;
-    }
-
-    //found
-    if(isFound === true) {
-      foundIndex = i;
-      break;
-    }
-  }
-  console.log('found is ' + sortedValidCmds[foundIndex]);
+  socket.emit('input', msg);
 
   /*
   //sorry excuse of a parser
