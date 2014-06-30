@@ -18,6 +18,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
 var User = require(__dirname + '/User.js');
+var Command = require(__dirname + '/Command.js');
 app.use(express.static(__dirname + '/public'));
 
 // Globals
@@ -183,41 +184,104 @@ io.on('connection', function(socket){
 		}
 	});
 
-	
-	// Add msg.from and send to msg.to
-	socket.on('chat', function(msg) {
-		msg.from = player.name;
-		io.to(msg.to).emit('chat', msg);
+	// Save user data on disconnect
+	socket.on('disconnect', function() {
+		console.log('user ' + socket.id + ' disconnected');
+
+		//clear timers started on login
+		if(typeof intMapRefresh !== 'undefined') clearInterval(intMapRefresh);
+		if(typeof intStatsRefresh !== 'undefined') clearInterval(intStatsRefresh);
+		if(typeof intPlayerRecovery !== 'undefined') clearInterval(intPlayerRecovery);
+
+		//if logged in
+		if(typeof player !== 'undefined') {
+			io.to('/all').emit(player.name + ' has logged out');
+			updateUsersFile();
+		}
 	});
 
-	// Boundary checking then move player
-	socket.on('move', function(direction) {
-		if(maps[player.at].exits.hasOwnProperty(direction[0])) {
-			//leave previous map's channel
-			socket.leave(player.at);
+	// Any other input, echo back
+	socket.on('command', function(msg){
+		console.log(player.name + ' sends: ' + msg);
+		io.to(player.name).emit('message', msg);
+	});
 
-			//leave previous map
-			delete (maps[player.at]).users[player.name];
+	// Parser
+	socket.on('input', function(msg){
+		var sortedValidCmds = [
+			"/all",
+			"@help",
+			"east",
+			"north",
+			"poke",
+			"south",
+			"west"
+		];
 
-			//move position to next map
-			player.at = maps[player.at].exits[direction[0]];
+		//var sortedValidCmds = ['aaa','aab','aba','abb'];
+		//var sortedValidCmds = ['aaa','bbb','ddd','eee'];
 
-			//add player to map
-			(maps[player.at]).users[player.name] = player;
+		var i=0, j=0;
+		var foundIndex=null;
+		var isFound = false;
 
-			//update map
-			io.to(player.name).emit('map', maps[player.at]);
-			
-			//join next map's channel
-			socket.join(player.at);
+		var input = msg.split(' ');
+		var command = input[0].toLowerCase();
+
+		//match any substring of a command
+		for(i=0; i<sortedValidCmds.length; i++) {
+
+			//char by char comparison
+			for(j=0; command[j] === sortedValidCmds[i][j]; j++) {
+				if(j === command.length-1) {
+					isFound = true;
+					break;
+				}
+			}
+
+			//stop searching if past the char since sorted array
+			//eg. key: ccc; arr: aaa, bbb, ddd, eee; expected: break at ddd
+			//eg. key: aac; arr: aaa, aab, aba, abb; expected: break at aba
+			if(command.charCodeAt(j) < sortedValidCmds[i].charCodeAt(j)) {
+				console.log('charcode called');
+				break;
+			}
+
+			//found
+			if(isFound === true) {
+				foundIndex = i;
+				break;
+			}
+		}
+
+		if(foundIndex !== null) {
+			command = new Command(sortedValidCmds[foundIndex], msg);
+
+			if(command.type === 'move') {
+				Controller.move(command, socket, player);
+			}
+			else if(command.type === 'fight') {
+				Controller.fight(command, socket, player);
+			}
+			else if(command.type === 'chat') {
+				Controller.chat(command, player);
+			}
+			else if(command.type === 'settings') {
+				Controller.settings(command, player);
+			}
 		}
 		else {
-			io.to(player.name).emit('message', 'You cannot move in that direction');
+			console.log('could not find command');
 		}
 	});
+});
 
-	// Combat
-	socket.on('fight', function(data){
+//===========
+// Controller
+//===========
+var Controller = {
+
+	fight: function(data, socket, player) {
 		//allow for attacking one but being attacked by many
 		//but due to the mysterious nature of mobs 
 		//they can attack many at once since players are the one who start combat
@@ -296,89 +360,49 @@ io.on('connection', function(socket){
 		else {
 			io.to(player.name).emit('message', 'You are already in combat!');
 		}
-	});
+	},
 
-	// Save user data on disconnect
-	socket.on('disconnect', function() {
-		console.log('user ' + socket.id + ' disconnected');
+	move: function(command, socket, player) {
+		if(maps[player.at].exits.hasOwnProperty(command.direction[0])) {
+			//leave previous map's channel
+			socket.leave(player.at);
 
-		//clear timers started on login
-		if(typeof intMapRefresh !== 'undefined') clearInterval(intMapRefresh);
-		if(typeof intStatsRefresh !== 'undefined') clearInterval(intStatsRefresh);
-		if(typeof intPlayerRecovery !== 'undefined') clearInterval(intPlayerRecovery);
+			//leave previous map
+			delete (maps[player.at]).users[player.name];
 
-		//if logged in
-		if(typeof player !== 'undefined') {
-			io.to('/all').emit(player.name + ' has logged out');
-			updateUsersFile();
-		}
-	});
+			//move position to next map
+			player.at = maps[player.at].exits[command.direction[0]];
 
-	// Any other input, echo back
-	socket.on('command', function(msg){
-		console.log(player.name + ' sends: ' + msg);
-		io.to(player.name).emit('message', msg);
-	});
+			//add player to map
+			(maps[player.at]).users[player.name] = player;
 
-	// Parser in progress
-	socket.on('input', function(msg){
-		var sortedValidCmds = [
-			"/all",
-			"@help",
-			"east",
-			"north",
-			"poke",
-			"should",
-			"soot",
-			"south",
-			"sulli",
-			"west"
-		];
-
-		//var sortedValidCmds = ['aaa','aab','aba','abb'];
-		//var sortedValidCmds = ['aaa','bbb','ddd','eee'];
-
-		var i=0, j=0;
-		var foundIndex=null;
-		var isFound = false;
-
-		var input = msg.split(' ');
-		var command = input[0].toLowerCase();
-
-		//match any substring of a command
-		for(i=0; i<sortedValidCmds.length; i++) {
-
-			//char by char comparison
-			for(j=0; command[j] === sortedValidCmds[i][j]; j++) {
-				if(j === command.length-1) {
-					isFound = true;
-					break;
-				}
-			}
-
-			//stop searching if past the char since sorted array
-			//eg. key: ccc; arr: aaa, bbb, ddd, eee; expected: break at ddd
-			//eg. key: aac; arr: aaa, aab, aba, abb; expected: break at aba
-			if(command.charCodeAt(j) < sortedValidCmds[i].charCodeAt(j)) {
-				console.log('charcode called');
-				break;
-			}
-
-			//found
-			if(isFound === true) {
-				foundIndex = i;
-				break;
-			}
-		}
-
-		if(foundIndex !== null) {
-			console.log('found is ' + sortedValidCmds[foundIndex]);
+			//update map
+			io.to(player.name).emit('map', maps[player.at]);
+			
+			//join next map's channel
+			socket.join(player.at);
 		}
 		else {
-			console.log('could not find command');
+			io.to(player.name).emit('message', 'You cannot move in that direction');
 		}
-	});
-});
+	},
+
+	chat: function(msg, player) {
+		msg.from = player.name;
+		io.to(msg.to).emit('chat', msg);
+	},
+
+	settings: function(data, player) {
+		if(data.setting === 'help') {
+			io.to(player.name).emit('message', 'Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke" to fight');
+		}
+	}
+
+};
+
+
+
+
 
 //=======
 // Other
