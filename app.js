@@ -26,6 +26,7 @@ var maps = {};
 var users = {};
 var socketid = {};
 var mobs = require(__dirname + '/Mob.js');
+var validCmds = require(__dirname + '/validCmds.js');
 
 // Listen to <port>
 http.listen(port, ipaddress, function(){
@@ -208,15 +209,7 @@ io.on('connection', function(socket){
 
 	// Parser
 	socket.on('input', function(msg){
-		var sortedValidCmds = [
-			"/all",
-			"@help",
-			"east",
-			"north",
-			"poke",
-			"south",
-			"west"
-		];
+		var sortedValidCmds = validCmds.allSortedCmds;
 
 		//var sortedValidCmds = ['aaa','aab','aba','abb'];
 		//var sortedValidCmds = ['aaa','bbb','ddd','eee'];
@@ -276,11 +269,13 @@ io.on('connection', function(socket){
 	});
 });
 
+
 //===========
 // Controller
 //===========
 var Controller = {
 
+	//requires data.skill, data.target
 	fight: function(data, socket, player) {
 		//allow for attacking one but being attacked by many
 		//but due to the mysterious nature of mobs 
@@ -362,6 +357,7 @@ var Controller = {
 		}
 	},
 
+	//requires command.direction
 	move: function(command, socket, player) {
 		if(maps[player.at].exits.hasOwnProperty(command.direction[0])) {
 			//leave previous map's channel
@@ -387,11 +383,13 @@ var Controller = {
 		}
 	},
 
+	//requires msg.to, msg.content
 	chat: function(msg, player) {
 		msg.from = player.name;
 		io.to(msg.to).emit('chat', msg);
 	},
 
+	//requires data.setting
 	settings: function(data, player) {
 		if(data.setting === 'help') {
 			io.to(player.name).emit('message', 'Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke" to fight');
@@ -399,9 +397,6 @@ var Controller = {
 	}
 
 };
-
-
-
 
 
 //=======
