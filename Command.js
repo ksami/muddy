@@ -9,13 +9,16 @@ function Command(cmd, input) {
 		this.direction = cmd;
 	}
 	else if(validCmds.fightCmds.indexOf(cmd) >= 0) {
-		//var params = input.slice(' ');
+		var params = input.split(' ');
 
 		this.type = 'fight';
 		this.skill = cmd;
-		//this.target = params[1];
-		//DEBUG
-		this.target = 'slimelet';
+		if(params.length > 1) {
+			this.target = params[1];
+		}
+		else {
+			this.target = 'undefined';
+		}
 	}
 	else if(validCmds.chatCmds.indexOf(cmd) >= 0) {
 		this.type = 'chat';

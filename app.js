@@ -284,7 +284,10 @@ var Controller = {
 		//they can attack many at once since players are the one who start combat
 		if(player.inCombat === false) {
 			//check if target exists in map
-			var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target;});
+			var mobsInMap = maps[player.at].mobs.filter(function(mob){
+				//include in array if mob.name starts with data.target
+				return mob.name.slice(0, data.target.length) === data.target;
+			});
 
 			if(mobsInMap.length > 0) {
 
@@ -404,7 +407,7 @@ var Controller = {
 	//requires data.setting
 	settings: function(data, player) {
 		if(data.setting === 'help') {
-			io.to(player.name).emit('message', 'Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke" to fight');
+			io.to(player.name).emit('message', 'Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke <target>" to fight');
 		}
 	}
 
