@@ -221,7 +221,7 @@ io.on('connection', function(socket){
 		var input = msg.split(' ');
 		var command = input[0].toLowerCase();
 
-		//match any substring of a command
+		//match starting of command
 		for(i=0; i<sortedValidCmds.length; i++) {
 
 			//char by char comparison
@@ -247,6 +247,7 @@ io.on('connection', function(socket){
 			}
 		}
 
+		//choose correct function to execute
 		if(foundIndex !== null) {
 			command = new Command(sortedValidCmds[foundIndex], msg);
 
@@ -277,7 +278,7 @@ var Controller = {
 
 	//requires data.skill, data.target
 	fight: function(data, socket, player) {
-		
+
 		//allow for attacking one but being attacked by many
 		//but due to the mysterious nature of mobs 
 		//they can attack many at once since players are the one who start combat

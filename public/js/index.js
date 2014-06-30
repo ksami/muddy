@@ -39,39 +39,6 @@ $('#command').submit(function(){
   
   socket.emit('input', msg);
 
-  /*
-  //sorry excuse of a parser
-  var cmdtest = msg.split(' ');
-  if(cmdtest[0].length === 0) {
-    socket.emit('command', msg);
-  }
-  else if(cmdtest[0] === '/all') {
-    msg = msg.slice(cmdtest[0].length);
-    socket.emit('chat', {'to': '/all', 'content': msg.trim()});
-  }
-  else if(cmdtest[0] === '@help') {
-    $('#messages').append($('<li>').text('Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke" to fight'));
-  }
-  else if('north'.slice(0, cmdtest[0].length) === cmdtest[0]) {
-    socket.emit('move', 'north');
-  }
-  else if('south'.slice(0, cmdtest[0].length) === cmdtest[0]) {
-    socket.emit('move', 'south');
-  }
-  else if('east'.slice(0, cmdtest[0].length) === cmdtest[0]) {
-    socket.emit('move', 'east');
-  }
-  else if('west'.slice(0, cmdtest[0].length) === cmdtest[0]) {
-    socket.emit('move', 'west');
-  }
-  else if('poke'.slice(0, cmdtest[0].length) === cmdtest[0]) {
-    socket.emit('fight', {'skill': 'poke', 'target': 'slimelet'});
-  }
-  else {
-    socket.emit('command', msg);  
-  }
-  */
-
   $('#m').val('');
   return false;
 });
