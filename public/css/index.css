@@ -15,20 +15,36 @@
 .green {
   color: #00ff00;
 }
+.hide{
+  display: none;
+}
+.center{
+  background: gray;
+  display: block;
+  height: 144px;
+  margin: auto;
+  
+  position: absolute;
+  left:0;
+  right: 0;
+  top: 0;
+  bottom: 0;  
+  
+  width: 50%;
+}
+
 ul{
   padding-left: 5px;
   list-style-type: none;
 }
+form input {
+  width: 300px;
+}
+
 #messages {
   height: 300px;
   width: 640px;
 }
 #mapname {
   font-style: underline;
-}
-.hide{
-  display:none;
-}
-form input {
-  width: 300px;
 }

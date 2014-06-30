@@ -223,7 +223,7 @@ io.on('connection', function(socket){
 		//they can attack many at once since players are the one who start combat
 		if(player.inCombat === false) {
 			//check if target exists in map
-			var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target});
+			var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target;});
 
 			if(mobsInMap.length > 0) {
 				//assign target as the Mob object not just its name
@@ -328,7 +328,7 @@ io.on('connection', function(socket){
 // Hashing function
 var hash = function(str) {
   var hash = 0, i, chr, len;
-  if (str.length == 0) return hash;
+  if (str.length === 0) return hash;
   for (i = 0, len = str.length; i < len; i++) {
     chr   = str.charCodeAt(i);
     hash  = ((hash << 5) - hash) + chr;
@@ -364,7 +364,7 @@ var updateUsersFile = function() {
 			console.log('Users.JSON save to ' + _fileusers);
 		}
 	});
-}
+};
 
 setInterval(function() {
 	io.to('/hints').emit('message', 'Welcome to muddy! Type @help for help');
@@ -378,16 +378,18 @@ var serverShutdown = function() {
 	//prevent new connections, close existing
 	http.close(function() {
 		console.log('Closing connections');
-		process.exit()
+		process.exit();
 	});
 
 	//if after 10 seconds, force close
 	setTimeout(function() {
 		console.error('Could not close connections in time, forcefully shutting down');
-		process.exit()
+		process.exit();
 	}, 10*1000);
-}
+};
 
 //does not capture on cygwin windows
+//need to do a better check
+//possibly on startup redirect everyone?
 process.on('SIGINT', serverShutdown);
 process.on('SIGTERM', serverShutdown);

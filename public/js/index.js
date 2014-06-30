@@ -28,6 +28,7 @@ $('#login').submit(function(){
 });
 
 // When user enters a command
+// [command] [<param1> <param2> ...]
 $('#command').submit(function(){
   var msg = $('#m').val();
   msg = msg.trim();
@@ -36,6 +37,57 @@ $('#command').submit(function(){
   $('#messages').append($('<li>').text('> '+ msg));
   scrollToBottom('#messages');
   
+  var sortedValidCmds = [
+    "/all",
+    "@help",
+    "east",
+    "north",
+    "poke",
+    "should",
+    "soot",
+    "south",
+    "sulli",
+    "west"
+  ];
+  
+  //var sortedValidCmds = ['aaa','aab','aba','abb'];
+  //var sortedValidCmds = ['aaa','bbb','ddd','eee'];
+
+  var i=0, j=0;
+  var foundIndex=null;
+  var isFound = false;
+
+  var input = msg.split(' ');
+  var command = input[0].toLowerCase();
+
+  //match any substring of a command
+  for(i=0; i<sortedValidCmds.length; i++) {
+    
+    //char by char comparison
+    for(j=0; command[j] === sortedValidCmds[i][j]; j++) {
+      if(j === command.length-1) {
+        isFound = true;
+        break;
+      }
+    }
+        
+    //stop searching if past the char since sorted array
+    //eg. key: ccc; arr: aaa, bbb, ddd, eee; expected: break at ddd
+    //eg. key: aac; arr: aaa, aab, aba, abb; expected: break at aba
+    if(command.charCodeAt(j) < sortedValidCmds[i].charCodeAt(j)) {
+      console.log('charcode called');
+      break;
+    }
+
+    //found
+    if(isFound === true) {
+      foundIndex = i;
+      break;
+    }
+  }
+  console.log('found is ' + sortedValidCmds[foundIndex]);
+
+  /*
   //sorry excuse of a parser
   var cmdtest = msg.split(' ');
   if(cmdtest[0].length === 0) {
@@ -66,6 +118,7 @@ $('#command').submit(function(){
   else {
     socket.emit('command', msg);  
   }
+  */
 
   $('#m').val('');
   return false;
@@ -92,7 +145,7 @@ socket.on('loginverified', function(username){
 
 socket.on('loginfailed', function(){
   alert('Wrong username/password, please try again');
-})
+});
 
 socket.on('message', function(msg){
   if(typeof msg.class === 'undefined') {
@@ -133,17 +186,17 @@ socket.on('map', function(data){
 
 socket.on('combatInfo', function(data){
   var pdead = '';
-  if(data.playerhp <= 0) {pdead = '(dead)'};
+  if(data.playerhp <= 0) {pdead = '(dead)';}
   $('#player').text(data.playername + pdead + ': ' + data.playerhp);
 
   var tdead = '';
-  if(data.targethp <= 0) {tdead = '(dead)'};
+  if(data.targethp <= 0) {tdead = '(dead)';}
   $('#target').text(data.targetname + tdead + ': ' + data.targethp);
 });
 
 socket.on('stats', function(player){
   var pdead = '';
-  if(player.hp <= 0) {pdead = '(dead)'};
+  if(player.hp <= 0) {pdead = '(dead)';}
   $('#player').text(player.name + pdead + ': ' + player.hp);
 });
 
@@ -163,11 +216,11 @@ var scrollToBottom = function(id) {
     $('#messages li').slice(0,buffer).remove();
   }
   $(id).scrollTop($(id)[0].scrollHeight);
-}
+};
 
 var hash = function(str) {
   var hash = 0, i, chr, len;
-  if (str.length == 0) return hash;
+  if (str.length === 0) return hash;
   for (i = 0, len = str.length; i < len; i++) {
     chr   = str.charCodeAt(i);
     hash  = ((hash << 5) - hash) + chr;
