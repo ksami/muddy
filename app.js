@@ -277,6 +277,7 @@ var Controller = {
 
 	//requires data.skill, data.target
 	fight: function(data, socket, player) {
+		
 		//allow for attacking one but being attacked by many
 		//but due to the mysterious nature of mobs 
 		//they can attack many at once since players are the one who start combat
@@ -285,10 +286,17 @@ var Controller = {
 			var mobsInMap = maps[player.at].mobs.filter(function(mob){return mob.name === data.target;});
 
 			if(mobsInMap.length > 0) {
-				//assign target as the Mob object not just its name
-				var target = mobsInMap[0];
 
-				if(target.isDead === false){
+				//assign target as the Mob object not just its name
+				var target;
+				for(var i=0; i<mobsInMap.length; i++) {
+					if(mobsInMap[i].isDead === false) {
+						target = mobsInMap[i];
+						break;
+					}
+				}
+				
+				if(typeof target !== 'undefined'){
 					target.inCombat = true;
 					player.inCombat = true;
 
@@ -346,6 +354,9 @@ var Controller = {
 							io.to(player.name).emit('message', 'Victory! You have defeated ' + target.name);
 						}
 					}, 300);
+				}
+				else {
+					io.to(player.name).emit('message', 'Targets all dead');
 				}
 			}
 			else {
