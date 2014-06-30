@@ -30,18 +30,19 @@ for(var i=0; i<25; i++) {
 	var newmap = new map(area, i, prefix + area + '-' + i , 'grass, grass, grass');
 	
 	var exits = {};
-	if((i%5)-1>=0) {
-		exits['w'] = prefix + area + '-' + (i-1);
-	}
-	if((i%5)+1<=4) {
-		exits['e'] = prefix + area + '-' + (i+1);
-	}
 	if((Math.floor(i/5))-1>=0) {
 		exits['n'] = prefix + area + '-' + (i-5);
 	}
 	if((Math.floor(i/5))+1<=4) {
 		exits['s'] = prefix + area + '-' + (i+5);
 	}
+	if((i%5)+1<=4) {
+		exits['e'] = prefix + area + '-' + (i+1);
+	}
+	if((i%5)-1>=0) {
+		exits['w'] = prefix + area + '-' + (i-1);
+	}
+	
 	newmap['exits'] = exits;
 
 	var playerpos = 'vvvvv';
@@ -58,4 +59,4 @@ fs.writeFile(_filemaps, JSON.stringify(maps, null, 4), function(err) {
 	else {
 		console.log('Users.JSON save to ' + _filemaps);
 	}
-})
+});
