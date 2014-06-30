@@ -236,7 +236,6 @@ io.on('connection', function(socket){
 			//eg. key: ccc; arr: aaa, bbb, ddd, eee; expected: break at ddd
 			//eg. key: aac; arr: aaa, aab, aba, abb; expected: break at aba
 			if(command.charCodeAt(j) < sortedValidCmds[i].charCodeAt(j)) {
-				console.log('charcode called');
 				break;
 			}
 

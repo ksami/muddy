@@ -1,5 +1,7 @@
 // Class declaration for User class
 
+var skills = require(__dirname + '/skills.js');
+
 //add on/overwrite properties initialised in Actor
 //overload constructor based on type of first param
 function User(data, socketid) {
@@ -24,12 +26,7 @@ function User(data, socketid) {
 		this.isDead = false;
 		this.inCombat = false;
 		this.skills = {
-			poke: {
-				name: 'poke',
-				id: 1,				//unique across all skills
-				desc: '*poke poke*',
-				atk: {min: 1, max: 5}
-			}
+			poke: skills.poke
 		};
 		this.defaultSkill = 'poke';
 	}
