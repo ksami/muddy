@@ -57,7 +57,7 @@ function User(data, socketid) {
 	
 	//================
 	// Common with Mob
-	// count: 2
+	// count: 5
 	
 	//pass in target Actor object, skill name
 	//NOTE: no check for if skill exists
@@ -78,32 +78,63 @@ function User(data, socketid) {
 		}
 		other.hp = other.hp - reducedDamage;
 
+		//kill other
 		if(other.hp <= 0) {
 			other.onDeath();
+			this.inCombat = false;
 		}
 
 		return reducedDamage;
 	}
-	this.recover = function() {
-		if(this.hp < this.maxhp) {
-			if(this.recovery.max < 2) {
-				this.hp += 1;		//newbie help? until they decide to increase max recovery
+
+	//Recover hp
+	this.recover = function(self) {
+		if(self.hp < self.maxhp) {
+			if(self.recovery.max < 2) {
+				self.hp += 1;		//newbie help? until they decide to increase max recovery
 			}
 			else {
-				this.hp += (Math.floor((Math.random() * this.recovery.max) + this.recovery.min));
+				self.hp += (Math.floor((Math.random() * self.recovery.max) + self.recovery.min));
 			}
 
-			if(this.hp > this.maxhp) {
-				this.hp = this.maxhp;
+			if(self.hp > self.maxhp) {
+				self.hp = self.maxhp;
 			}
 		}
 	}
+
+	var self = this;
+	//Timer for recovery
+	var timer;
+	//Starts timer
+	this.startRecovery = function(){
+		timer = setInterval(function(){
+			self.recover(self);
+		},this.recovery.spd);
+	}
+	//Stops timer
+	this.stopRecovery = function(){
+		if(typeof timer !== 'undefined') {
+			clearInterval(timer);
+		}
+	}
+
 	//==
 	// Same name, diff function from Mob
 	//
 	this.onDeath = function() {
 		this.hp = 0;
 		this.isDead = true;
+		this.inCombat = false;
+		this.stopRecovery();
+
+		//respawn in 2 seconds
+		setTimeout(function(){self.respawn(self);}, 2000);
+	}
+
+	this.respawn = function() {
+		this.isDead = false;
+		this.startRecovery();
 	}
 }
 

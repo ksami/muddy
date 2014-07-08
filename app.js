@@ -125,15 +125,13 @@ io.on('connection', function(socket){
 					io.to(player.name).emit('map', maps[player.at]);
 				}, 1000);
 
-				//start player recovery
-				var intPlayerRecovery = setInterval(function() {
-					player.recover();
-				}, player.recovery.spd);
-
 				//update player stats every 1 second
 				var intStatsRefresh = setInterval(function() {
 					io.to(player.name).emit('stats', player);
 				}, 1000);
+
+				//start recovery of hp
+				player.startRecovery();
 			}
 			else{
 				//wrong password
@@ -192,7 +190,6 @@ io.on('connection', function(socket){
 		//clear timers started on login
 		if(typeof intMapRefresh !== 'undefined') clearInterval(intMapRefresh);
 		if(typeof intStatsRefresh !== 'undefined') clearInterval(intStatsRefresh);
-		if(typeof intPlayerRecovery !== 'undefined') clearInterval(intPlayerRecovery);
 
 		//if logged in
 		if(typeof player !== 'undefined') {
@@ -304,9 +301,7 @@ var Controller = {
 					player.inCombat = true;
 
 					//start target recovery
-					var intTargetRecovery = setInterval(function(){
-						target.recover();
-					}, target.recovery.spd);
+					target.startRecovery();
 
 					//start player combat
 					var intPlayerCombat = setInterval(function(){
@@ -340,18 +335,21 @@ var Controller = {
 					var intHpCheck = setInterval(function(){
 						io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp, 'targetname': target.name, 'targethp': target.hp});
 
-						//NOTE: assuming player does not die...
-
 						//death
-						if(target.isDead === true) {
+						if(player.isDead === true) {
 							//stop fighting dammit
 							clearInterval(intTargetCombat);
-							clearInterval(intTargetRecovery);
 							clearInterval(intPlayerCombat);
 							clearInterval(intHpCheck);
 
-							player.inCombat = false;
-							target.inCombat = false;
+							socket.broadcast.to(player.at).emit('message', {'msg': player.name + ' has been defeated by ' + target.name + '!', 'class': 'blue'});
+							io.to(player.name).emit('message', {'msg': '*** You have been defeated by ' + target.name + '! ***', 'class': 'red bold'});
+						}
+						else if(target.isDead === true) {
+							//stop fighting dammit
+							clearInterval(intTargetCombat);
+							clearInterval(intPlayerCombat);
+							clearInterval(intHpCheck);
 
 							socket.broadcast.to(player.at).emit('message', {'msg': player.name + ' has defeated ' + target.name, 'class': 'blue'});
 							io.to(player.name).emit('message', 'Victory! You have defeated ' + target.name);

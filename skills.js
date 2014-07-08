@@ -8,7 +8,7 @@ var skills = {
 	kick: {
 		name: 'kick',
 		id: 2,				//unique across all skills
-		desc: 'no please not there!',
+		desc: 'oww!',
 		atk: {min: 4, max: 8}
 	},
 	chill: {

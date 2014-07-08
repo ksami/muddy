@@ -46,7 +46,7 @@ function Mob(id, index, area) {
 	
 	//================
 	// Common with User
-	// count: 2
+	// count: 5
 	
 	//pass in target Actor object, skill name
 	//NOTE: no check for if skill exists
@@ -67,12 +67,16 @@ function Mob(id, index, area) {
 		}
 		other.hp = other.hp - reducedDamage;
 
+		//kill other
 		if(other.hp <= 0) {
 			other.onDeath();
+			this.inCombat = false;
 		}
 
 		return reducedDamage;
 	}
+
+	//Recover hp
 	this.recover = function() {
 		if(this.hp < this.maxhp) {
 			if(this.recovery.max < 2) {
@@ -87,24 +91,39 @@ function Mob(id, index, area) {
 			}
 		}
 	}
+
+	var self = this;
+	//Timer for recovery
+	var timer;
+	//Starts timer
+	this.startRecovery = function(){
+		timer = setInterval(function(){
+			self.recover(self);
+		},this.recovery.spd);
+	}
+	//Stops timer
+	this.stopRecovery = function(){
+		if(typeof timer !== 'undefined') {
+			clearInterval(timer);
+		}
+	}
+
 	//==
-	// Same name, diff function from Mob
+	// Same name, diff function from User
 	//
 	this.onDeath = function() {
 		//die
 		this.hp = 0;
 		this.isDead = true;
+		this.inCombat = false;
+		this.stopRecovery();
 
 		//drop items etc.
 
 		//respawn
-		var self = this;
 		setTimeout(function(){self.respawn(self);}, self.respawnTime);
 	}
 
-	//==============
-	// Mob-specific
-	//
 	this.respawn = function(self) {
 		self.hp = self.inithp;
 		self.isDead = false;

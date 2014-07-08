@@ -15,6 +15,9 @@
 .green {
   color: #00ff00;
 }
+.bold{
+  font-weight: bold;
+}
 .hide{
   display: none;
 }

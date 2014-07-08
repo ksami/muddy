@@ -2,3 +2,4 @@ node_modules
 .private
 .openshift
 json/users.json
+notes
