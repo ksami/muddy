@@ -11,8 +11,9 @@ function User(data, socketid) {
 
 	// New User
 	if((typeof data) === 'string') {
-		this.crit = {chance: 0.05, time: 1000};
+		this.crit = {chance: 0.375, time: 1000};
 		this.currentTarget = {};
+		this.currentSkill = {};
 		//================`
 		// Common with Mob
 		// count: 13
@@ -37,6 +38,7 @@ function User(data, socketid) {
 	else {
 		this.crit = data.crit;
 		this.currentTarget = data.currentTarget;
+		this.currentSkill = data.currentSkill;
 		//================
 		// Common with Mob
 		// count: 13

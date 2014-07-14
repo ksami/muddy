@@ -196,12 +196,11 @@ io.on('connection', function(socket){
 	// Calculate crit damage
 	socket.on('critEndAck', function(crit){
 		if(typeof player !== 'undefined') {
-			console.log('crit received: ' + crit);
 
 			//find number of times skill name is spelt correctly in string
 			//NOTE: modifier for length of skill name? longer = more dmg
 			var critMult = 0;
-			var critSkill = '';
+			var critSkill;
 			for(var skill in player.skills) {
 				var regex = new RegExp(skill, 'gi');
 				var res = crit.match(regex);
@@ -211,17 +210,9 @@ io.on('connection', function(socket){
 					break;
 				}
 			}
-			console.log(critMult + critSkill);
-
-			// if(player.currentTarget.isDead === false) {
-			// 	player.damageOther(player.currentTarget, critSkill, critMult);
-				player.inCombat = false;
-				Controller.fight({'skill': critSkill, 'target': player.currentTarget}, socket, player, critMult);
-			// }
-			// else {
-			// 	player.inCombat = false;
-			// 	io.to(player.name).emit('message', strings.targetdead);
-			// }
+			
+			player.inCombat = false;
+			Controller.fight({'skill': critSkill||player.currentSkill, 'target': player.currentTarget}, socket, player, critMult);
 		}
 	});
 
@@ -349,13 +340,14 @@ var Controller = {
 					target.inCombat = true;
 					player.inCombat = true;
 
+					//save target and skill for resuming after crit
 					player.currentTarget = target;
+					player.currentSkill = data.skill;
 
 					//start target recovery
 					target.startRecovery();
 
 					//apply any crit damage
-					console.log('critmult: ' + critMult);
 					if(typeof critMult !== 'undefined') {
 						var dmg = player.damageOther(target, data.skill, critMult);
 						var strplayer;

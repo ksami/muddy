@@ -59,7 +59,10 @@ socket.on('loginverified', function(username){
   nick = username;
   //$('#login').toggleClass('hide');
   //$('#main').toggleClass('hide');
-  $('#login').slideUp(400, function(){$('#main').slideDown(600);});
+  $('#login').slideUp(400, function(){
+    $('#main').slideDown(600);
+    $('#m').focus();
+  });
 });
 
 socket.on('loginfailed', function(){
@@ -67,7 +70,7 @@ socket.on('loginfailed', function(){
 });
 
 socket.on('critStart', function(){
-  alert('critStart');
+  alert('CRITICAL STRIKE! - Type the name of one of your skills as many times as possible, a crit multiplier will be added to your damage roll');
   $('#critWindow').toggleClass('hide center');
   $('#crit').focus();
   socket.emit('critStartAck');
@@ -77,7 +80,6 @@ socket.on('critStart', function(){
 
 socket.on('critEnd', function(){
   $('#critWindow').toggleClass('hide center');
-  alert('critEnd');
 
   var crit = $('#crit').val();
   crit = crit.trim();
