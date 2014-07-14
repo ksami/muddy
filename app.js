@@ -342,8 +342,12 @@ var Controller = {
 							clearInterval(intPlayerCombat);
 							clearInterval(intHpCheck);
 
+							io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});
 							socket.broadcast.to(player.at).emit('message', {'msg': player.name + ' has been defeated by ' + target.name + '!', 'class': 'blue'});
 							io.to(player.name).emit('message', {'msg': '*** You have been defeated by ' + target.name + '! ***', 'class': 'red bold'});
+
+							//respawn at map m0-12
+							Controller.moveTo({map: 'm0-12'}, socket, player);
 						}
 						else if(target.isDead === true) {
 							//stop fighting dammit
@@ -351,6 +355,7 @@ var Controller = {
 							clearInterval(intPlayerCombat);
 							clearInterval(intHpCheck);
 
+							io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});
 							socket.broadcast.to(player.at).emit('message', {'msg': player.name + ' has defeated ' + target.name, 'class': 'blue'});
 							io.to(player.name).emit('message', 'Victory! You have defeated ' + target.name);
 						}
@@ -393,6 +398,37 @@ var Controller = {
 			}
 			else {
 				io.to(player.name).emit('message', 'You cannot move in that direction');
+			}
+		}
+		else {
+			io.to(player.name).emit('message', 'No escape!');
+		}
+	},
+
+	//requires command.map
+	moveTo: function(command, socket, player) {
+		if(player.inCombat === false) {
+			if(maps.hasOwnProperty(command.map)) {
+				//leave previous map's channel
+				socket.leave(player.at);
+
+				//leave previous map
+				delete (maps[player.at]).users[player.name];
+
+				//move position to next map
+				player.at = command.map;
+
+				//add player to map
+				(maps[player.at]).users[player.name] = player;
+
+				//update map
+				io.to(player.name).emit('map', maps[player.at]);
+				
+				//join next map's channel
+				socket.join(player.at);
+			}
+			else {
+				io.to(player.name).emit('message', 'You cannot move to that map');
 			}
 		}
 		else {

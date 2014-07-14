@@ -108,9 +108,14 @@ socket.on('combatInfo', function(data){
   if(data.playerhp <= 0) {pdead = '(dead)';}
   $('#player').text(data.playername + pdead + ': ' + data.playerhp);
 
-  var tdead = '';
-  if(data.targethp <= 0) {tdead = '(dead)';}
-  $('#target').text(data.targetname + tdead + ': ' + data.targethp);
+  if(typeof data.targetname !== 'undefined') {
+    var tdead = '';
+    if(data.targethp <= 0) {tdead = '(dead)';}
+    $('#target').text(data.targetname + tdead + ': ' + data.targethp);
+  }
+  else {
+    $('#target').text('');
+  }
 });
 
 socket.on('stats', function(player){
