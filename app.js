@@ -186,6 +186,45 @@ io.on('connection', function(socket){
 		}
 	});
 
+	// Acknowledge a crit start
+	socket.on('critStartAck', function(){
+		if(typeof player !== 'undefined') {
+			setTimeout(function(){io.to(player.name).emit('critEnd');}, player.crit.time);
+		}
+	});
+
+	// Calculate crit damage
+	socket.on('critEndAck', function(crit){
+		if(typeof player !== 'undefined') {
+			console.log('crit received: ' + crit);
+
+			//find number of times skill name is spelt correctly in string
+			//NOTE: modifier for length of skill name? longer = more dmg
+			var critMult = 0;
+			var critSkill = '';
+			for(var skill in player.skills) {
+				var regex = new RegExp(skill, 'gi');
+				var res = crit.match(regex);
+				if(Array.isArray(res) === true) {
+					critMult = res.length;
+					critSkill = res[0];
+					break;
+				}
+			}
+			console.log(critMult + critSkill);
+
+			// if(player.currentTarget.isDead === false) {
+			// 	player.damageOther(player.currentTarget, critSkill, critMult);
+				player.inCombat = false;
+				Controller.fight({'skill': critSkill, 'target': player.currentTarget}, socket, player, critMult);
+			// }
+			// else {
+			// 	player.inCombat = false;
+			// 	io.to(player.name).emit('message', strings.targetdead);
+			// }
+		}
+	});
+
 	// Save user data on disconnect
 	socket.on('disconnect', function() {
 		console.log('user ' + socket.id + ' disconnected');
@@ -277,7 +316,7 @@ io.on('connection', function(socket){
 var Controller = {
 
 	//requires data.skill, data.target
-	fight: function(data, socket, player) {
+	fight: function(data, socket, player, critMult) {
 
 		//allow for attacking one but being attacked by many
 		//but due to the mysterious nature of mobs 
@@ -289,39 +328,87 @@ var Controller = {
 				return mob.name.slice(0, data.target.length) === data.target;
 			});
 
-			if(mobsInMap.length > 0) {
+			if(mobsInMap.length > 0 || typeof data.target === 'object') {
 
 				//assign target as the Mob object not just its name
 				var target;
-				for(var i=0; i<mobsInMap.length; i++) {
-					if(mobsInMap[i].isDead === false) {
-						target = mobsInMap[i];
-						break;
+
+				if(mobsInMap.length > 0) {
+					for(var i=0; i<mobsInMap.length; i++) {
+						if(mobsInMap[i].isDead === false) {
+							target = mobsInMap[i];
+							break;
+						}
 					}
+				}
+				else {
+					target = data.target;
 				}
 				
 				if(typeof target !== 'undefined'){
 					target.inCombat = true;
 					player.inCombat = true;
 
+					player.currentTarget = target;
+
 					//start target recovery
 					target.startRecovery();
 
-					//start player combat
-					var intPlayerCombat = setInterval(function(){
-						var dmg = player.damageOther(target, data.skill);
+					//apply any crit damage
+					console.log('critmult: ' + critMult);
+					if(typeof critMult !== 'undefined') {
+						var dmg = player.damageOther(target, data.skill, critMult);
 						var strplayer;
 						var strothers;
 						if(dmg === 0){
-							strothers = sprintf(strings.playermiss_o, player.name, target.name);
-							strplayer = sprintf(strings.playermiss_p, target.name);
+							strothers = sprintf(strings.playercritmiss_o, player.name, target.name);
+							strplayer = sprintf(strings.playercritmiss_p, target.name);
 						}
 						else{
-							strothers = sprintf(strings.playerhit_o, player.name, data.skill, target.name, dmg);
-							strplayer = sprintf(strings.playerhit_p, data.skill, target.name, dmg);
+							strothers = sprintf(strings.playercrithit_o, player.name, target.name, dmg);
+							strplayer = sprintf(strings.playercrithit_p, target.name, dmg);
 						}
 						socket.broadcast.to(player.at).emit('message', {'msg': strothers, 'class': 'blue'});
-						io.to(player.name).emit('message', strplayer);
+						io.to(player.name).emit('message', {'msg': strplayer, 'class': 'bold'});
+					}
+
+					//start player combat
+					var intPlayerCombat = setInterval(function(){
+						//roll crit
+						var isCrit = (Math.random() >= (1 - player.crit.chance));
+
+						if(isCrit === true) {
+							clearInterval(intPlayerCombat);
+							clearInterval(intTargetCombat);
+							clearInterval(intHpCheck);
+							target.stopRecovery();
+
+							//crit
+							//emit crit start
+							//	client emits critStartAck
+							io.to(player.name).emit('critStart');
+
+							//timer to emit crit end after crit.time
+							//	client emits back string from crit window
+
+							//event handler for crit calculates crit damage
+							//calls this fight function again
+						}
+						else {
+							var dmg = player.damageOther(target, data.skill);
+							var strplayer;
+							var strothers;
+							if(dmg === 0){
+								strothers = sprintf(strings.playermiss_o, player.name, target.name);
+								strplayer = sprintf(strings.playermiss_p, target.name);
+							}
+							else{
+								strothers = sprintf(strings.playerhit_o, player.name, data.skill, target.name, dmg);
+								strplayer = sprintf(strings.playerhit_p, data.skill, target.name, dmg);
+							}
+							socket.broadcast.to(player.at).emit('message', {'msg': strothers, 'class': 'blue'});
+							io.to(player.name).emit('message', strplayer);
+						}
 					}, player.spd);
 					
 					//start target combat
@@ -351,6 +438,7 @@ var Controller = {
 							clearInterval(intTargetCombat);
 							clearInterval(intPlayerCombat);
 							clearInterval(intHpCheck);
+							player.currentTarget = {};
 
 							//clear mob info after 3 seconds
 							setTimeout(function(){io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});}, 3000);
@@ -371,6 +459,7 @@ var Controller = {
 							clearInterval(intTargetCombat);
 							clearInterval(intPlayerCombat);
 							clearInterval(intHpCheck);
+							player.currentTarget = {};
 
 							//clear mob info after 3 seconds
 							setTimeout(function(){io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});}, 3000);

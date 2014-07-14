@@ -50,7 +50,7 @@ function Mob(id, index, area) {
 	
 	//pass in target Actor object, skill name
 	//NOTE: no check for if skill exists
-	this.damageOther = function(other, skill) {
+	this.damageOther = function(other, skill, critMult) {
 		//if no skill param, default to defaultSkill
 		if(typeof skill === 'undefined') {
 			skill = this.skills[this.defaultSkill];
@@ -58,8 +58,17 @@ function Mob(id, index, area) {
 		else{
 			skill = this.skills[skill];
 		}
-		//damage is discrete
-		var rawDamage = Math.floor((Math.random() * skill.atk.max) + skill.atk.min);
+
+		var rawDamage = 0;
+
+		if(typeof critMult === 'undefined') {
+			//damage is discrete
+			rawDamage = Math.floor((Math.random() * skill.atk.max) + skill.atk.min);
+		}
+		else {
+			rawDamage = critMult * (Math.floor((Math.random() * skill.atk.max) + skill.atk.min));
+		}
+
 		var reducedDamage = rawDamage - (Math.floor((Math.random() * other.def.max) + other.def.min));
 		
 		if(reducedDamage < 0) {

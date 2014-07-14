@@ -66,6 +66,30 @@ socket.on('loginfailed', function(){
   alert('Wrong username/password, please try again');
 });
 
+socket.on('critStart', function(){
+  alert('critStart');
+  $('#critWindow').toggleClass('hide center');
+  $('#crit').focus();
+  socket.emit('critStartAck');
+
+  //NOTE: disable copy paste?
+});
+
+socket.on('critEnd', function(){
+  $('#critWindow').toggleClass('hide center');
+  alert('critEnd');
+
+  var crit = $('#crit').val();
+  crit = crit.trim();
+
+  //echo everything typed in, whitespaced trimmed
+  $('#messages').append($('<li>').text('> '+ crit));
+  scrollToBottom('#messages');
+
+  $('#crit').val('');
+  socket.emit('critEndAck', crit);
+});
+
 socket.on('message', function(msg){
   if(typeof msg.class === 'undefined') {
     $('#messages').append($('<li>').text(msg));  

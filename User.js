@@ -11,7 +11,9 @@ function User(data, socketid) {
 
 	// New User
 	if((typeof data) === 'string') {
-		//================
+		this.crit = {chance: 0.05, time: 1000};
+		this.currentTarget = {};
+		//================`
 		// Common with Mob
 		// count: 13
 		this.name = data;
@@ -33,6 +35,8 @@ function User(data, socketid) {
 
 	// Loading user data from JSON file
 	else {
+		this.crit = data.crit;
+		this.currentTarget = data.currentTarget;
 		//================
 		// Common with Mob
 		// count: 13
@@ -61,7 +65,7 @@ function User(data, socketid) {
 	
 	//pass in target Actor object, skill name
 	//NOTE: no check for if skill exists
-	this.damageOther = function(other, skill) {
+	this.damageOther = function(other, skill, critMult) {
 		//if no skill param, default to defaultSkill
 		if(typeof skill === 'undefined') {
 			skill = this.skills[this.defaultSkill];
@@ -69,8 +73,17 @@ function User(data, socketid) {
 		else{
 			skill = this.skills[skill];
 		}
-		//damage is discrete
-		var rawDamage = Math.floor((Math.random() * skill.atk.max) + skill.atk.min);
+
+		var rawDamage = 0;
+
+		if(typeof critMult === 'undefined') {
+			//damage is discrete
+			rawDamage = Math.floor((Math.random() * skill.atk.max) + skill.atk.min);
+		}
+		else {
+			rawDamage = critMult * (Math.floor((Math.random() * skill.atk.max) + skill.atk.min));
+		}
+
 		var reducedDamage = rawDamage - (Math.floor((Math.random() * other.def.max) + other.def.min));
 		
 		if(reducedDamage < 0) {
