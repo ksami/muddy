@@ -5,11 +5,11 @@
         "name": "m0-0",
         "desc": "grass, grass, grass",
         "map": [
-            "Xvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            "X....",
+            ".....",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -24,11 +24,11 @@
         "name": "m0-1",
         "desc": "grass, grass, grass",
         "map": [
-            "vXvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            ".X...",
+            ".....",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -44,11 +44,11 @@
         "name": "m0-2",
         "desc": "grass, grass, grass",
         "map": [
-            "vvXvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            "..X..",
+            ".....",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -64,11 +64,11 @@
         "name": "m0-3",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvXv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            "...X.",
+            ".....",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -84,11 +84,11 @@
         "name": "m0-4",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvX",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            "....X",
+            ".....",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -103,11 +103,11 @@
         "name": "m0-5",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "Xvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            "X....",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -123,11 +123,11 @@
         "name": "m0-6",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vXvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            ".X...",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -144,11 +144,11 @@
         "name": "m0-7",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvXvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            "..X..",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -165,11 +165,11 @@
         "name": "m0-8",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvXv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            "...X.",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -186,11 +186,11 @@
         "name": "m0-9",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvX",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            "....X",
+            ".....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -206,11 +206,11 @@
         "name": "m0-10",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "Xvvvv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            ".....",
+            "X....",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -226,11 +226,11 @@
         "name": "m0-11",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vXvvv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            ".....",
+            ".X...",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -247,11 +247,11 @@
         "name": "m0-12",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvXvv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            ".....",
+            "..X..",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -268,11 +268,11 @@
         "name": "m0-13",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvXv",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            ".....",
+            "...X.",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -289,11 +289,11 @@
         "name": "m0-14",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvX",
-            "vvvvv",
-            "vvvvv"
+            ".....",
+            ".....",
+            "....X",
+            ".....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -309,11 +309,11 @@
         "name": "m0-15",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "Xvvvv",
-            "vvvvv"
+            ".....",
+            ".....",
+            ".....",
+            "X....",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -329,11 +329,11 @@
         "name": "m0-16",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vXvvv",
-            "vvvvv"
+            ".....",
+            ".....",
+            ".....",
+            ".X...",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -350,11 +350,11 @@
         "name": "m0-17",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvXvv",
-            "vvvvv"
+            ".....",
+            ".....",
+            ".....",
+            "..X..",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -371,11 +371,11 @@
         "name": "m0-18",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvXv",
-            "vvvvv"
+            ".....",
+            ".....",
+            ".....",
+            "...X.",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -392,11 +392,11 @@
         "name": "m0-19",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvX",
-            "vvvvv"
+            ".....",
+            ".....",
+            ".....",
+            "....X",
+            "....."
         ],
         "mobs": [],
         "users": {},
@@ -412,11 +412,11 @@
         "name": "m0-20",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "Xvvvv"
+            ".....",
+            ".....",
+            ".....",
+            ".....",
+            "X...."
         ],
         "mobs": [],
         "users": {},
@@ -431,11 +431,11 @@
         "name": "m0-21",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vXvvv"
+            ".....",
+            ".....",
+            ".....",
+            ".....",
+            ".X..."
         ],
         "mobs": [],
         "users": {},
@@ -451,11 +451,11 @@
         "name": "m0-22",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvXvv"
+            ".....",
+            ".....",
+            ".....",
+            ".....",
+            "..X.."
         ],
         "mobs": [],
         "users": {},
@@ -471,11 +471,11 @@
         "name": "m0-23",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvXv"
+            ".....",
+            ".....",
+            ".....",
+            ".....",
+            "...X."
         ],
         "mobs": [],
         "users": {},
@@ -491,11 +491,11 @@
         "name": "m0-24",
         "desc": "grass, grass, grass",
         "map": [
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvv",
-            "vvvvX"
+            ".....",
+            ".....",
+            ".....",
+            ".....",
+            "....X"
         ],
         "mobs": [],
         "users": {},

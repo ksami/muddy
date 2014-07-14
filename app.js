@@ -17,6 +17,8 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
+var sprintf = require('sprintf-js').sprintf;
+var strings = require(__dirname + '/strings.js');
 var User = require(__dirname + '/User.js');
 var Command = require(__dirname + '/Command.js');
 app.use(express.static(__dirname + '/public'));
@@ -118,7 +120,8 @@ io.on('connection', function(socket){
 				//trigger events
 				console.log(player.name + ' has logged in');
 				io.to(player.name).emit('loginverified', player.name);
-				io.to('/all').emit('message', 'Welcome ' + player.name + '!');
+				var str = sprintf(strings.welcome, player.name);
+				io.to('/all').emit('message', str);
 				
 				//trigger map refresh every 1 second
 				var intMapRefresh = setInterval(function() {
@@ -193,7 +196,8 @@ io.on('connection', function(socket){
 
 		//if logged in
 		if(typeof player !== 'undefined') {
-			io.to('/all').emit(player.name + ' has logged out');
+			var str = sprintf(strings.logout, player.name);
+			io.to('/all').emit('message', str);
 			updateUsersFile();
 		}
 	});
@@ -306,29 +310,35 @@ var Controller = {
 					//start player combat
 					var intPlayerCombat = setInterval(function(){
 						var dmg = player.damageOther(target, data.skill);
-						var msg;
+						var strplayer;
+						var strothers;
 						if(dmg === 0){
-							msg = ' missed ' + target.name + '!';
+							strothers = sprintf(strings.playermiss_o, player.name, target.name);
+							strplayer = sprintf(strings.playermiss_p, target.name);
 						}
 						else{
-							msg = ' ' + data.skill + ' ' + target.name + ' for ' + dmg + ' damage!';
+							strothers = sprintf(strings.playerhit_o, player.name, data.skill, target.name, dmg);
+							strplayer = sprintf(strings.playerhit_p, data.skill, target.name, dmg);
 						}
-						socket.broadcast.to(player.at).emit('message', {'msg': player.name + msg, 'class': 'blue'});
-						io.to(player.name).emit('message', 'You' + msg);
+						socket.broadcast.to(player.at).emit('message', {'msg': strothers, 'class': 'blue'});
+						io.to(player.name).emit('message', strplayer);
 					}, player.spd);
 					
 					//start target combat
 					var intTargetCombat = setInterval(function(){
 						var dmg = target.damageOther(player);	//using target's default skill
-						var msg = {};
+						var strplayer;
+						var strothers;
 						if(dmg === 0){
-							msg = target.name + ' missed you!';
+							strothers = sprintf(strings.targetmiss_o, player.name, target.name);
+							strplayer = sprintf(strings.targetmiss_p, target.name);
 						}
 						else{
-							msg.class = 'red';
-							msg.msg = target.name + ' ' + target.defaultSkill + 's you for ' + dmg + ' damage!';
+							strothers = sprintf(strings.targethit_o, target.name, target.defaultSkill, player.name, dmg);
+							strplayer = sprintf(strings.targethit_p, target.name, target.defaultSkill, dmg);
 						}
-						io.to(player.name).emit('message', msg);
+						socket.broadcast.to(player.at).emit('message', {'msg': strothers, 'class': 'blue'});
+						io.to(player.name).emit('message', {'msg': strplayer, 'class': 'red'});
 					}, target.spd);
 
 					//start hp check for both
@@ -342,9 +352,16 @@ var Controller = {
 							clearInterval(intPlayerCombat);
 							clearInterval(intHpCheck);
 
-							io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});
-							socket.broadcast.to(player.at).emit('message', {'msg': player.name + ' has been defeated by ' + target.name + '!', 'class': 'blue'});
-							io.to(player.name).emit('message', {'msg': '*** You have been defeated by ' + target.name + '! ***', 'class': 'red bold'});
+							//clear mob info after 3 seconds
+							setTimeout(function(){io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});}, 3000);
+
+							var strplayer;
+							var strothers;
+							strothers = sprintf(strings.playerdefeat_o, player.name, target.name);
+							strplayer = sprintf(strings.playerdefeat_p, target.name);
+							
+							socket.broadcast.to(player.at).emit('message', {'msg': strothers, 'class': 'blue'});
+							io.to(player.name).emit('message', {'msg': strplayer, 'class': 'red bold'});
 
 							//respawn at map m0-12
 							Controller.moveTo({map: 'm0-12'}, socket, player);
@@ -355,24 +372,29 @@ var Controller = {
 							clearInterval(intPlayerCombat);
 							clearInterval(intHpCheck);
 
-							//clear mob info after 3 seconds to confirm mob death
+							//clear mob info after 3 seconds
 							setTimeout(function(){io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});}, 3000);
 
-							socket.broadcast.to(player.at).emit('message', {'msg': player.name + ' has defeated ' + target.name, 'class': 'blue'});
-							io.to(player.name).emit('message', 'Victory! You have defeated ' + target.name);
+							var strplayer;
+							var strothers;
+							strothers = sprintf(strings.targetdefeat_o, player.name, target.name);
+							strplayer = sprintf(strings.targetdefeat_p, target.name);
+
+							socket.broadcast.to(player.at).emit('message', {'msg': strothers, 'class': 'blue'});
+							io.to(player.name).emit('message', {'msg': strplayer, 'class': 'green'});
 						}
 					}, 300);
 				}
 				else {
-					io.to(player.name).emit('message', 'Targets all dead');
+					io.to(player.name).emit('message', strings.targetdead);
 				}
 			}
 			else {
-				io.to(player.name).emit('message', 'Target missing');
+				io.to(player.name).emit('message', strings.targetmissing);
 			}
 		}
 		else {
-			io.to(player.name).emit('message', 'You are already in combat!');
+			io.to(player.name).emit('message', strings.playerincombat);
 		}
 	},
 
@@ -399,11 +421,11 @@ var Controller = {
 				socket.join(player.at);
 			}
 			else {
-				io.to(player.name).emit('message', 'You cannot move in that direction');
+				io.to(player.name).emit('message', strings.movebad);
 			}
 		}
 		else {
-			io.to(player.name).emit('message', 'No escape!');
+			io.to(player.name).emit('message', strings.moveincombat);
 		}
 	},
 
@@ -430,11 +452,11 @@ var Controller = {
 				socket.join(player.at);
 			}
 			else {
-				io.to(player.name).emit('message', 'You cannot move to that map');
+				io.to(player.name).emit('message', strings.movebad);
 			}
 		}
 		else {
-			io.to(player.name).emit('message', 'No escape!');
+			io.to(player.name).emit('message', strings.moveincombat);
 		}
 	},
 
@@ -447,7 +469,7 @@ var Controller = {
 	//requires data.setting
 	settings: function(data, player) {
 		if(data.setting === 'help') {
-			io.to(player.name).emit('message', 'Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke <target>" to fight');
+			io.to(player.name).emit('message', strings.help);
 		}
 	}
 
@@ -499,8 +521,11 @@ var updateUsersFile = function() {
 	});
 };
 
+var hintiterator = 0;
 setInterval(function() {
-	io.to('/hints').emit('message', 'Welcome to muddy! Type @help for help');
+	var str = strings.hint[hintiterator];
+	hintiterator = (hintiterator + 1) % strings.hint.length;
+	io.to('/hints').emit('message', 'Hint: ' + str);
 }, 60000);
 
 //server shutdown

@@ -8,11 +8,11 @@ function map(area, id, name, desc) {
 	this.name = name;
 	this.desc = desc;
 	this.map = [
-		'vvvvv',
-		'vvvvv',
-		'vvvvv',
-		'vvvvv',
-		'vvvvv'
+		'.....',
+		'.....',
+		'.....',
+		'.....',
+		'.....'
 	];
 	this.mobs = [];
 	this.users = {};
@@ -45,7 +45,7 @@ for(var i=0; i<25; i++) {
 	
 	newmap['exits'] = exits;
 
-	var playerpos = 'vvvvv';
+	var playerpos = '.....';
 	playerpos = playerpos.substr(0,i%5) + 'X' + playerpos.substr((i%5)+1);
 	newmap.map[Math.floor(i/5)] = playerpos;
 	console.dir(newmap);

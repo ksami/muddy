@@ -4,7 +4,8 @@
   "description": "muddy express",
   "dependencies": {
     "express": "^4.4.2",
-    "socket.io": "^1.0.4"
+    "socket.io": "^1.0.4",
+    "sprintf-js": "0.0.7"
   },
   "scripts": {
     "start": "node app.js"
