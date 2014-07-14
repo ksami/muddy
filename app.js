@@ -355,7 +355,9 @@ var Controller = {
 							clearInterval(intPlayerCombat);
 							clearInterval(intHpCheck);
 
-							io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});
+							//clear mob info after 3 seconds to confirm mob death
+							setTimeout(function(){io.to(player.name).emit('combatInfo', {'playername': player.name, 'playerhp': player.hp});}, 3000);
+
 							socket.broadcast.to(player.at).emit('message', {'msg': player.name + ' has defeated ' + target.name, 'class': 'blue'});
 							io.to(player.name).emit('message', 'Victory! You have defeated ' + target.name);
 						}
