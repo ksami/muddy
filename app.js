@@ -371,27 +371,32 @@ var Controller = {
 
 	//requires command.direction
 	move: function(command, socket, player) {
-		if(maps[player.at].exits.hasOwnProperty(command.direction[0])) {
-			//leave previous map's channel
-			socket.leave(player.at);
+		if(player.inCombat === false) {
+			if(maps[player.at].exits.hasOwnProperty(command.direction[0])) {
+				//leave previous map's channel
+				socket.leave(player.at);
 
-			//leave previous map
-			delete (maps[player.at]).users[player.name];
+				//leave previous map
+				delete (maps[player.at]).users[player.name];
 
-			//move position to next map
-			player.at = maps[player.at].exits[command.direction[0]];
+				//move position to next map
+				player.at = maps[player.at].exits[command.direction[0]];
 
-			//add player to map
-			(maps[player.at]).users[player.name] = player;
+				//add player to map
+				(maps[player.at]).users[player.name] = player;
 
-			//update map
-			io.to(player.name).emit('map', maps[player.at]);
-			
-			//join next map's channel
-			socket.join(player.at);
+				//update map
+				io.to(player.name).emit('map', maps[player.at]);
+				
+				//join next map's channel
+				socket.join(player.at);
+			}
+			else {
+				io.to(player.name).emit('message', 'You cannot move in that direction');
+			}
 		}
 		else {
-			io.to(player.name).emit('message', 'You cannot move in that direction');
+			io.to(player.name).emit('message', 'No escape!');
 		}
 	},
 
