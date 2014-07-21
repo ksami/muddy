@@ -27,6 +27,7 @@ app.use(express.static(__dirname + '/public'));
 var maps = {};
 var users = {};
 var socketid = {};
+var items = require(__dirname + '/Item.js');
 var mobs = require(__dirname + '/Mob.js');
 var validCmds = require(__dirname + '/validCmds.js');
 
@@ -59,6 +60,11 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 	//add mobs to maps
 	for(var i=0; i<mobs.length; i++) {
 		(maps[mobs[i].at].mobs).push(mobs[i]);
+	}
+
+	//add items to maps
+	for(var i=0; i<items.length; i++) {
+		(maps[items[i].at].items).push(items[i].name);
 	}
 });
 

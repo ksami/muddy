@@ -122,6 +122,12 @@ socket.on('map', function(data){
   }
   $('#mapmobs').text('mobs: ' + mapmobs);
 
+  var mapitems = [];
+  for(var l=0; l<data['items'].length; l++) {
+    mapitems.push(data['items'][l]);
+  }
+  $('#mapitems').text('items: ' + mapitems);
+
   $('#map0').text(data['map'][0]);
   $('#map1').text(data['map'][1]);
   $('#map2').text(data['map'][2]);
