@@ -11,7 +11,7 @@ function Item() {
 	this.name = 'item';
 	this.id = itemprefix + '0';
 	this.desc = 'Default item description';
-	this.owner = this;
+	this.owner = null;
 	this.at = mapprefix + '0-12';
 	this.type = 'item';
 	this.quantity = 1;
@@ -61,7 +61,8 @@ function Katana() {
 	this.type = 'sword';
 	this.desc = 'A sharp and precise weapon';
 
-	this.at = mapprefix + '0-' + Math.floor(Math.random() * 25);
+	//this.at = mapprefix + '0-' + Math.floor(Math.random() * 25);
+	this.at = mapprefix + '0-12';
 
 	this.isWieldable = true;
 	this.atk.min = 20;
@@ -72,7 +73,7 @@ function Katana() {
 	this.coolness = 9001;
 }
 
-for(var i=0; i<10; i++) {
+for(var i=0; i<2; i++) {
 	items.push(new Katana());
 }
 

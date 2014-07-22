@@ -64,7 +64,7 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 
 	//add items to maps
 	for(var i=0; i<items.length; i++) {
-		(maps[items[i].at].items).push(items[i].name);
+		(maps[items[i].at].items).push(items[i]);
 	}
 });
 

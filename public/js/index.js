@@ -124,7 +124,7 @@ socket.on('map', function(data){
 
   var mapitems = [];
   for(var l=0; l<data['items'].length; l++) {
-    mapitems.push(data['items'][l]);
+    mapitems.push(data['items'][l].name);
   }
   $('#mapitems').text('items: ' + mapitems);
 
