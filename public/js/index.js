@@ -136,7 +136,10 @@ socket.on('map', function(data){
 });
 
 socket.on('inventory', function(inv){
-  for(var i=0; i<inv.length; i++) $('#inventory').append($('<li>').text(inv[i]));
+  $('#inventory li').remove();
+  for(var i in inv){
+    $('#inventory').append($('<li>').text(i + ' (' + inv[i].quantity + '/' + inv[i].quantityLimit + ')'));
+  }
 });
 
 socket.on('combatInfo', function(data){

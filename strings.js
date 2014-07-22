@@ -34,7 +34,8 @@ var strings = {
 
 	//items
 	itemmissing: 'Item is missing',
-	itemnotpickable: 'Item cannot be picked up'
+	itemnotpickable: 'Item cannot be picked up',
+	itemtoomany: 'Cannot pick up anymore %s'
 }
 
 module.exports = strings;

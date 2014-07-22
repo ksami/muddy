@@ -68,16 +68,17 @@ function User(data, socketid) {
 		//check if item of same name already exists
 		if(this.items.hasOwnProperty(item.name)){
 			//check if can still stack
-			if((this.items[item.name].quantity + item.quantity) < this.items[item.name].quantityLimit){
-				this.items[item.name].quantity + item.quantity;
+			if((this.items[item.name].quantity + item.quantity) <= this.items[item.name].quantityLimit){
+				this.items[item.name].quantity = this.items[item.name].quantity + item.quantity;
 			}
 			else{
-				//TODO: if cannot stack how????
+				return 'unstackable';
 			}
 		}
 		else{
 			this.items[item.name] = item;
 		}
+		return;
 	}
 
 

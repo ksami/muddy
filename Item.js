@@ -66,6 +66,9 @@ function Katana() {
 
 	this.isPickable = true;
 	this.isWieldable = true;
+
+	this.quantityLimit = 1;
+
 	this.atk.min = 20;
 	this.atk.max = 22;
 	this.crit.chance = 0.1;

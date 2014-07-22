@@ -564,25 +564,34 @@ var Controller = {
 				//assign the target as the first item object itself
 				var target = itemsInMap[0];
 
-				//take item
+				//take first occurrence of item in map
 				if(target.isPickable){
-					//remove first occurrence of item in map
-					console.log(maps[player.at].items);
-					for (var i=0; i < maps[player.at].items.length; i++){
-						if (maps[player.at].items[i].name === target.name){
-							maps[player.at].items.splice(i,1);
-							break;
+
+					//add to inventory
+					if(player.pickItem(target) !== 'unstackable'){
+						//remove first occurrence of item in map
+						for (var i=0; i < maps[player.at].items.length; i++){
+							if (maps[player.at].items[i].name === target.name){
+								maps[player.at].items.splice(i,1);
+								break;
+							}
 						}
-					}
-					console.log(maps[player.at].items);
 
-					player.pickItem(target);
-
-					var inventory = [];
-					for(var i in player.items){
-						inventory.push(i);
+						//display inventory
+						var inventory = {};
+						for(var i in player.items){
+							inventory[i] = {
+								'quantity': player.items[i].quantity,
+								'quantityLimit': player.items[i].quantityLimit
+							};
+						}
+						io.to(player.name).emit('inventory', inventory);
 					}
-					io.to(player.name).emit('inventory', inventory);
+					else{
+						var str = sprintf(strings.itemtoomany, target.name);
+						io.to(player.name).emit('message', str);
+					}
+				
 				}
 				else{
 					var str = sprintf(strings.itemnotpickable, target.name);
