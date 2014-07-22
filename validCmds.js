@@ -3,8 +3,9 @@ var validCmds = {
 	chatCmds: ['/all'],
 	settingsCmds: ['@help'],
 	fightCmds: ['poke', 'kick', 'chill'],
+	skillCmds: ['take']
 };
 
-validCmds.allSortedCmds = validCmds.moveCmds.concat(validCmds.chatCmds, validCmds.settingsCmds, validCmds.fightCmds).sort();
+validCmds.allSortedCmds = validCmds.moveCmds.concat(validCmds.chatCmds, validCmds.settingsCmds, validCmds.fightCmds, validCmds.skillCmds).sort();
 
 module.exports = validCmds;

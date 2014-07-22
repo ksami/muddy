@@ -64,6 +64,7 @@ function Katana() {
 	//this.at = mapprefix + '0-' + Math.floor(Math.random() * 25);
 	this.at = mapprefix + '0-12';
 
+	this.isPickable = true;
 	this.isWieldable = true;
 	this.atk.min = 20;
 	this.atk.max = 22;

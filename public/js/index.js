@@ -135,6 +135,10 @@ socket.on('map', function(data){
   $('#map4').text(data['map'][4]);
 });
 
+socket.on('inventory', function(inv){
+  for(var i=0; i<inv.length; i++) $('#inventory').append($('<li>').text(inv[i]));
+});
+
 socket.on('combatInfo', function(data){
   var pdead = '';
   if(data.playerhp <= 0) {pdead = '(dead)';}

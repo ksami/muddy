@@ -20,6 +20,18 @@ function Command(cmd, input) {
 			this.target = 'undefined';
 		}
 	}
+	else if(validCmds.skillCmds.indexOf(cmd) >= 0) {
+		var params = input.split(' ');
+
+		this.type = 'skill';
+		this.skill = cmd;
+		if(params.length > 1) {
+			this.target = params[1];
+		}
+		else {
+			this.target = 'undefined';
+		}
+	}
 	else if(validCmds.chatCmds.indexOf(cmd) >= 0) {
 		this.type = 'chat';
 		this.to = cmd;
@@ -27,6 +39,7 @@ function Command(cmd, input) {
 	}
 	else if(validCmds.settingsCmds.indexOf(cmd) >= 0) {
 		this.type = 'settings';
+		//take away @ sign infront
 		this.setting = cmd.slice(1);
 	}
 }

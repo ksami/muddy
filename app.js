@@ -293,6 +293,9 @@ io.on('connection', function(socket){
 			else if(command.type === 'fight') {
 				Controller.fight(command, socket, player);
 			}
+			else if(command.type === 'skill') {
+				Controller.skill(command, socket, player);
+			}
 			else if(command.type === 'chat') {
 				Controller.chat(command, player);
 			}
@@ -544,6 +547,51 @@ var Controller = {
 		}
 		else {
 			io.to(player.name).emit('message', strings.moveincombat);
+		}
+	},
+
+	//executes skills/actions besides combat
+	skill: function(command, socket, player) {
+		if(command.skill === 'take'){
+			//check if item exists in map
+			var itemsInMap = maps[player.at].items.filter(function(item){
+				//include in array if item.name starts with command.target
+				return item.name.slice(0, command.target.length) === command.target;
+			});
+
+			//if found in map or target was already a valid object
+			if(itemsInMap.length > 0 || typeof command.target === 'object'){
+				//assign the target as the first item object itself
+				var target = itemsInMap[0];
+
+				//take item
+				if(target.isPickable){
+					//remove first occurrence of item in map
+					console.log(maps[player.at].items);
+					for (var i=0; i < maps[player.at].items.length; i++){
+						if (maps[player.at].items[i].name === target.name){
+							maps[player.at].items.splice(i,1);
+							break;
+						}
+					}
+					console.log(maps[player.at].items);
+
+					player.pickItem(target);
+
+					var inventory = [];
+					for(var i in player.items){
+						inventory.push(i);
+					}
+					io.to(player.name).emit('inventory', inventory);
+				}
+				else{
+					var str = sprintf(strings.itemnotpickable, target.name);
+					io.to(player.name).emit('message', str);
+				}
+			}
+			else{
+				io.to(player.name).emit('message', strings.itemmissing);
+			}
 		}
 	},
 

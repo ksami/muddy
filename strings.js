@@ -30,7 +30,11 @@ var strings = {
 	targethit_p: '%s %ss you for %s damage!',
 	targetmiss_o: '%s missed %s!',
 	targetmiss_p: '%s missed you!',
-	targetmissing: 'Target missing'
+	targetmissing: 'Target missing',
+
+	//items
+	itemmissing: 'Item is missing',
+	itemnotpickable: 'Item cannot be picked up'
 }
 
 module.exports = strings;

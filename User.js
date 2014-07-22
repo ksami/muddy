@@ -63,6 +63,26 @@ function User(data, socketid) {
 	// METHODS
 	//*********
 	
+	//TODO: no check for space yet
+	this.pickItem = function(item) {
+		//check if item of same name already exists
+		if(this.items.hasOwnProperty(item.name)){
+			//check if can still stack
+			if((this.items[item.name].quantity + item.quantity) < this.items[item.name].quantityLimit){
+				this.items[item.name].quantity + item.quantity;
+			}
+			else{
+				//TODO: if cannot stack how????
+			}
+		}
+		else{
+			this.items[item.name] = item;
+		}
+	}
+
+
+
+
 	//================
 	// Common with Mob
 	// count: 5
