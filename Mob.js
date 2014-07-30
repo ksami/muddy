@@ -2,6 +2,7 @@
 
 var skills = require(__dirname + '/skills.js');
 var mobsdata = require(__dirname + '/mobs.js');
+var Item = require(__dirname + '/Item.js').Item;
 
 var mapprefix = 'm';		//for prefixing maps
 
@@ -37,7 +38,7 @@ function Mob(mobdata) {
 	this.inithp = mobdata.inithp ||100;
 	this.area = mobdata.area ||0;
 	this.respawnTime = mobdata.respawnTime ||20000;
-
+	this.items = mobdata.items ||{};
 
 	//*********
 	// METHODS
@@ -135,6 +136,22 @@ function Mob(mobdata) {
 	this.respawn = function(self) {
 		self.hp = self.inithp;
 		self.isDead = false;
+	}
+
+	//==
+	// Mob-specific
+	//
+
+	//return an array of Item
+	this.dropItems = function() {
+		var drops = [];
+		for(var id in this.items){
+			//roll for drop chance
+			if(Math.random() > 1-this.items[id]){
+				drops.push(new Item(id));
+			}
+		}
+		return drops;
 	}
 }
 

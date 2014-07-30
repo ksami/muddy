@@ -456,6 +456,12 @@ var Controller = {
 							Controller.moveTo({map: 'm0-12'}, socket, player);
 						}
 						else if(target.isDead === true) {
+							//TODO: ONLY FOR MOBS!
+							var drops = target.dropItems();
+							for(var i=0; i < drops.length; i++){
+								(maps[player.at].items).push(drops[i]);
+							}
+
 							//stop fighting dammit
 							clearInterval(intTargetCombat);
 							clearInterval(intPlayerCombat);
