@@ -1,13 +1,13 @@
 // Class declaration for Mobs
 
 var skills = require(__dirname + '/skills.js');
+var mobsdata = require(__dirname + '/mobs.js');
 
 var mapprefix = 'm';		//for prefixing maps
 
 var mobs = [];
-var id = 0;
 
-function Mob(id, index, area) {
+function Mob(mobdata) {
 	//************
 	// PROPERTIES
 	//************
@@ -15,29 +15,28 @@ function Mob(id, index, area) {
 	//================
 	// Common with User
 	// count: 13
-	this.name = 'mob';
-	this.id = id;
-	this.desc = 'Much plain. Such nondescript. Wow.';
-	this.at = 'm0-12';
-	this.maxhp = 100;
-	this.hp = 100;
-	this.spd = 1000;
-	this.def = {min: 1, max: 5};
-	this.recovery = {spd: 2000, min: 0, max: 1};
+	this.name = mobdata.name || 'mob';
+	this.id = mobdata.id || id;
+	this.desc = mobdata.desc ||'Much plain. Such nondescript. Wow.';
+	this.at = mapprefix + mobdata.area + '-' + Math.floor(Math.random() * 25);
+	this.maxhp = mobdata.maxhp ||100;
+	this.hp = mobdata.hp ||100;
+	this.spd = mobdata.spd ||1000;
+	this.def = mobdata.def ||{min: 1, max: 5};
+	this.recovery = mobdata.recovery ||{spd: 2000, min: 0, max: 1};
 	this.isDead = false;
 	this.inCombat = false;
-	this.skills = {
+	this.skills = mobdata.skills ||{
 		poke: skills.poke
 	};
-	this.defaultSkill = 'poke';
+	this.defaultSkill = mobdata.defaultSkill ||'poke';
 	
 	//=============
 	// Mob-specific
 	//
-	this.inithp = 100;
-	this.index = index;		//like pokedex
-	this.area = area;
-	this.respawnTime = 20000;
+	this.inithp = mobdata.inithp ||100;
+	this.area = mobdata.area ||0;
+	this.respawnTime = mobdata.respawnTime ||20000;
 
 
 	//*********
@@ -139,67 +138,13 @@ function Mob(id, index, area) {
 	}
 }
 
-//index 1
-//++++++++++++++++
-// SLIMELET CLASS
-//++++++++++++++++
-
-//inherit from Mob class
-Slimelet.prototype = Mob.prototype;
-Slimelet.prototype.parent = Mob;
-
-function Slimelet(id) {
-	//extend Mob constructor
-	Mob.call(this,id,1,0);
-
-	this.name = 'slimelet';
-	this.desc = 'Young of a slime. Duh.';
-	this.at = mapprefix + this.area + '-' + Math.floor(Math.random() * 25);		//places this at a random map from m0-0 to m0-24
-	this.maxhp = 50;		//gets harder the longer the fight draws on
-	this.inithp = 30;
-	this.hp = this.inithp;
-	this.spd = 500;
-	this.def = {'min': 0, 'max': 4};
-	this.recovery.max = 2;
-	this.recovery.spd = 1000;
-}
-
-
-//index 2
-//++++++++++++++++
-// GHOSTLET CLASS
-//++++++++++++++++
-
-//inherit from Mob class
-Ghostlet.prototype = Mob.prototype;
-Ghostlet.prototype.parent = Mob;
-
-function Ghostlet(id) {
-	//extend Mob constructor
-	Mob.call(this,id,2,0);
-
-	this.name = 'ghostlet';
-	this.desc = 'Young of a ghost. Duh.';
-	this.at = mapprefix + this.area + '-' + Math.floor(Math.random() * 25);		//places this at a random map from m0-0 to m0-24
-	this.maxhp = 100;		//gets harder the longer the fight draws on
-	this.inithp = 65;
-	this.hp = this.inithp;
-	this.spd = 1200;
-	this.def = {'min': 2, 'max': 4};
-	this.recovery.max = 3;
-	this.recovery.spd = 1000;
-	this.skills.chill = skills.chill;
-	this.defaultSkill = 'chill';
-	this.respawnTime = 35000;
-}
-
 //create mobs
 var i;
 for(i=0; i<10; i++) {
-	mobs.push(new Slimelet(i));
+	mobs.push(new Mob(mobsdata['m001']));
 }
 for(; i<15; i++) {
-	mobs.push(new Ghostlet(i));
+	mobs.push(new Mob(mobsdata['m002']));
 }
 
 //expose to main module
