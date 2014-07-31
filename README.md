@@ -11,7 +11,7 @@ var port = 8080;
 
 ### Install dependencies
 `npm install express`  
-`npm install socket.io`
+`npm install socket.io`  
 `npm install sprintf-js`
 
 ### Run
