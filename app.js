@@ -140,6 +140,16 @@ io.on('connection', function(socket){
 					io.to(player.name).emit('stats', player);
 				}, 1000);
 
+				//display inventory
+				var inventory = {};
+				for(var i in player.items){
+					inventory[i] = {
+						'quantity': player.items[i].quantity,
+						'quantityLimit': player.items[i].quantityLimit
+					};
+				}
+				io.to(player.name).emit('inventory', inventory);
+
 				//start recovery of hp
 				player.startRecovery();
 
@@ -722,11 +732,11 @@ setInterval(function() {
 //server shutdown after 3 seconds
 var serverShutdown = function() {
 	console.log('Received kill signal, shutting down gracefully');
-	
-	//hastily save data
-	fs.writeFileSync(_fileusers, JSON.stringify(users, null, 4));
-
 	io.sockets.emit('servershutdown');
+
+	//cannot save data
+	//TODO: send a nicer kill signal which doesnt kill process till saved
+	//fs.writeFileSync(_fileusers, JSON.stringify(users, null, 4));
 
 	//doesnt execute past here
 
