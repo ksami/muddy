@@ -87,12 +87,16 @@ fs.readFile(_fileusers, 'utf8', function (err, data) {
 //=========
 io.on('connection', function(socket){
 	var player;
+	var intMapRefresh;
+	var intStatsRefresh;
 	
 	// When user first connects
 	socket.join(socket.id);
 	console.log('user ' + socket.id + ' connected');
 	io.to(socket.id).emit('socketid', socket.id);
 	
+	//update users global array
+	readUsersFile();
 
 	//==============================================
 	// Event handlers for events triggered by client
@@ -100,15 +104,11 @@ io.on('connection', function(socket){
 
 	// Request a login
 	socket.on('reqlogin', function(login){
-		
 		// if username already exists in database
 		if(users.hasOwnProperty(login.username)){
 			if(verifyPassword(login, socket.id) === true){
 				//update user's socketid
 				users[login.username].id = socket.id;
-
-				//update users file
-				updateUsersFile();
 
 				//assign globals
 				socketid[socket.id] = login.username;
@@ -118,6 +118,7 @@ io.on('connection', function(socket){
 				(maps[player.at]).users[player.name] = player;
 
 				//join channels
+				//TODO: add all channels as prop of user
 				socket.join('/hints');
 				socket.join('/all');
 				socket.join(player.name);
@@ -130,17 +131,20 @@ io.on('connection', function(socket){
 				io.to('/all').emit('message', str);
 				
 				//trigger map refresh every 1 second
-				var intMapRefresh = setInterval(function() {
+				intMapRefresh = setInterval(function() {
 					io.to(player.name).emit('map', maps[player.at]);
 				}, 1000);
 
 				//update player stats every 1 second
-				var intStatsRefresh = setInterval(function() {
+				intStatsRefresh = setInterval(function() {
 					io.to(player.name).emit('stats', player);
 				}, 1000);
 
 				//start recovery of hp
 				player.startRecovery();
+
+				//take out of combat
+				player.inCombat = false;
 			}
 			else{
 				//wrong password
@@ -226,15 +230,31 @@ io.on('connection', function(socket){
 	socket.on('disconnect', function() {
 		console.log('user ' + socket.id + ' disconnected');
 
-		//clear timers started on login
-		if(typeof intMapRefresh !== 'undefined') clearInterval(intMapRefresh);
-		if(typeof intStatsRefresh !== 'undefined') clearInterval(intStatsRefresh);
-
 		//if logged in
 		if(typeof player !== 'undefined') {
+			//leave combat
+			player.stopRecovery();
+			player.inCombat = false;
+
+			//leave channels
+			socket.leave('/hints');
+			socket.leave('/all');
+			socket.leave(player.name);
+			socket.leave(player.at);
+
+			//clear timers started on login
+			clearInterval(intMapRefresh);
+			clearInterval(intStatsRefresh);
+
+			//logout msg
 			var str = sprintf(strings.logout, player.name);
 			io.to('/all').emit('message', str);
-			updateUsersFile();
+			updateUsersFile('logout', player.name);
+
+			//update globals
+			//update users global is in the callback for users file
+			delete socketid[socket.id];
+			delete (maps[player.at]).users[player.name];
 		}
 	});
 
@@ -660,14 +680,35 @@ var verifyPassword = function(login, id) {
 
 
 //update users file
-var updateUsersFile = function() {
+var updateUsersFile = function(logout, playername) {
 	fs.writeFile(_fileusers, JSON.stringify(users, null, 4), function(err) {
 		if(err) {
 			console.log('User file error: ' + err);
 		}
 		else {
 			console.log('Users.JSON save to ' + _fileusers);
+			
+			if(logout === 'logout'){
+				delete users[playername];
+			}
 		}
+	});
+};
+
+//read from users file
+var readUsersFile = function() {
+	//read stored user data
+	fs.readFile(_fileusers, 'utf8', function (err, data) {
+		if(err) {
+			console.log('User file error: ' + err);
+			return;
+		}
+		//add to users global
+		var obj = JSON.parse(data);
+		for(var name in obj) {
+			users[name] = new User(obj[name]);
+		}
+		console.log('Users updated');
 	});
 };
 
@@ -678,10 +719,23 @@ setInterval(function() {
 	io.to('/hints').emit('message', 'Hint: ' + str);
 }, 60000);
 
-//server shutdown
+//server shutdown after 3 seconds
 var serverShutdown = function() {
 	console.log('Received kill signal, shutting down gracefully');
+	
+	//hastily save data
+	fs.writeFileSync(_fileusers, JSON.stringify(users, null, 4));
+
 	io.sockets.emit('servershutdown');
+
+	//doesnt execute past here
+
+	//countdown
+	var i=3;
+	setInterval(function(i){
+		console.log(i);
+		i--;
+	}, 1000);
 
 	//prevent new connections, close existing
 	http.close(function() {

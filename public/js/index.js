@@ -47,6 +47,7 @@ $('#command').submit(function(){
 // Event handlers for events triggered by server
 //==============================================
 socket.on('servershutdown' ,function(){
+  socket.emit('disconnect');
   alert('server restarting');
   document.location.href = '/';
 });
