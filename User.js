@@ -12,6 +12,19 @@ function User(data, socketid) {
 	// New User
 	if((typeof data) === 'string') {
 		this.items = {};
+		this.equipSlots = {
+			head: '',
+			body: '',
+			legs: '',
+			rightArm: '',
+			rightHand: '',
+			rightCalf: '',
+			rightFoot: '',
+			leftArm: '',
+			leftHand: '',
+			leftCalf: '',
+			leftFoot: ''
+		};
 		this.crit = {chance: 0.375, time: 1000};
 		this.currentTarget = {};
 		this.currentSkill = {};
@@ -38,6 +51,7 @@ function User(data, socketid) {
 	// Loading user data from JSON file
 	else {
 		this.items = data.items;
+		this.equipSlots = data.equipSlots;
 		this.crit = data.crit;
 		this.currentTarget = data.currentTarget;
 		this.currentSkill = data.currentSkill;

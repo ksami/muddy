@@ -63,9 +63,10 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 	}
 
 	//add items to maps
-	for(var i=0; i<items.length; i++) {
-		(maps[items[i].at].items).push(items[i]);
-	}
+	//testing only
+	// for(var i=0; i<items.length; i++) {
+	// 	(maps['m0-12'].items).push(items[i]);
+	// }
 });
 
 //read stored user data
@@ -500,7 +501,7 @@ var Controller = {
 							//TODO: ONLY FOR MOBS!
 							var drops = target.dropItems();
 							for(var i=0; i < drops.length; i++){
-								(maps[player.at].items).push(drops[i]);
+								(maps[target.at].items).push(drops[i]);
 							}
 
 							//stop fighting dammit
@@ -647,6 +648,36 @@ var Controller = {
 			}
 			else{
 				io.to(player.name).emit('message', strings.itemmissing);
+			}
+		}
+		else if(command.skill === 'equip'){
+			//TODO: see if can move to User as a method
+			console.log('equip');
+			var item;
+
+			//check if target item exists
+			for(var itemname in player.items){
+				if(itemname.slice(0, command.target.length) === command.target){
+					item = player.items[itemname];
+					break;
+				}
+			}
+
+			if(typeof item === 'object'){
+				if(player.equipSlots[item.equipSlot] === ''){
+					player.equipSlots[item.equipSlot] = item.name;
+					(player.items[item.name]).isEquipped = true;
+
+					//TODO: add on stats
+
+					io.to(player.name).emit('equip', player.equipSlots);
+				}
+				else{
+					console.log('theres an equip in that slot');
+				}
+			}
+			else{
+				console.log('no item');
 			}
 		}
 	},

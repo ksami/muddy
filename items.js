@@ -7,12 +7,10 @@ var items = {
 		type: 'sword',
 		desc: 'A sharp and precise weapon',
 	
-		//at: mapprefix + '0-' + Math.floor(Math.random() * 25),
-		at: 'm0-12',
-	
 		isPickable: true,
 		isWieldable: true,
 	
+		equipSlot: 'rightHand',
 		quantityLimit: 1,
 	
 		atk: {min: 20, max: 22},

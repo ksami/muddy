@@ -15,7 +15,6 @@ function Item(itemid) {
 	this.id = itemsdata[itemid].id || itemprefix + '0';
 	this.desc = itemsdata[itemid].desc || 'Default item description';
 	this.owner = itemsdata[itemid].owner || null;
-	this.at = itemsdata[itemid].at || mapprefix + '0-12';
 	this.type = itemsdata[itemid].type || 'item';
 	this.quantity = itemsdata[itemid].quantity || 1;
 	this.quantityLimit = itemsdata[itemid].quantityLimit || 1;
@@ -28,6 +27,7 @@ function Item(itemid) {
 	this.isConsumable = itemsdata[itemid].isConsumable || false;
 	this.isInvestigable = itemsdata[itemid].isInvestigable || false;
 	this.isReadable = itemsdata[itemid].isReadable || false;
+	this.isEquipped = false;
 
 	// Wieldable
 	this.atk = itemsdata[itemid].atk || {min: 0, max: 0};
@@ -42,7 +42,9 @@ function Item(itemid) {
 	this.recovery = itemsdata[itemid].recovery || {spd: 0, min: 0, max: 0};
 
 	this.dodge = itemsdata[itemid].dodge || 0;
-	this.part = itemsdata[itemid].part || null;
+
+	// Wieldable and Wearable
+	this.equipSlot = itemsdata[itemid].equipSlot || null;
 
 	// Consumable
 	this.hp = itemsdata[itemid].hp || 0;
@@ -51,7 +53,8 @@ function Item(itemid) {
 
 }
 
-//testing, places 2 katanas at m0-12
+//testing, places 2 katanas at
+//map stated in app.js readfile(maps)
 // for(var i=0; i<2; i++) {
 // 	items.push(new Item('e001'));
 // }

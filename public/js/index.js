@@ -146,6 +146,13 @@ socket.on('inventory', function(inv){
   }
 });
 
+socket.on('equip', function(eqp){
+  $('#equipment li').remove();
+  for(var e in eqp){
+    $('#equipment').append($('<li>').text(e + ': ' + eqp[e]));
+  }
+})
+
 socket.on('combatInfo', function(data){
   var pdead = '';
   if(data.playerhp <= 0) {pdead = '(dead)';}

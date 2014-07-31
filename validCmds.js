@@ -3,7 +3,7 @@ var validCmds = {
 	chatCmds: ['/all'],
 	settingsCmds: ['@help'],
 	fightCmds: ['poke', 'kick', 'chill'],
-	skillCmds: ['take']
+	skillCmds: ['take', 'equip']
 };
 
 validCmds.allSortedCmds = validCmds.moveCmds.concat(validCmds.chatCmds, validCmds.settingsCmds, validCmds.fightCmds, validCmds.skillCmds).sort();
