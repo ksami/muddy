@@ -104,61 +104,71 @@ io.on('connection', function(socket){
 
 	// Request a login
 	socket.on('reqlogin', function(login){
-		// if username already exists in database
-		if(users.hasOwnProperty(login.username)){
-			if(verifyPassword(login, socket.id) === true){
-				//update user's socketid
-				users[login.username].id = socket.id;
+		//if username already exists in database
+		if(users.hasOwnProperty(login.username) === true){
+			if(users[login.username].hasOwnProperty('isLoggedin') === false) {
+				if(verifyPassword(login, socket.id) === true){
+					//update user's socketid
+					users[login.username].id = socket.id;
+					//note: not a property of User class,
+					//hence shouldn't be in users[login.username]
+					//deleted on disconnect anw
+					users[login.username].isLoggedin = true;
 
-				//assign globals
-				socketid[socket.id] = login.username;
-				player = users[login.username];
-				
-				//add player to map
-				(maps[player.at]).users[player.name] = player;
+					//assign globals
+					socketid[socket.id] = login.username;
+					player = users[login.username];
+					
+					//add player to map
+					(maps[player.at]).users[player.name] = player;
 
-				//join channels
-				//TODO: add all channels as prop of user
-				socket.join('/hints');
-				socket.join('/all');
-				socket.join(player.name);
-				socket.join(player.at);
+					//join channels
+					//TODO: add all channels as prop of user
+					socket.join('/hints');
+					socket.join('/all');
+					socket.join(player.name);
+					socket.join(player.at);
 
-				//trigger events
-				console.log(player.name + ' has logged in');
-				io.to(player.name).emit('loginverified', player.name);
-				var str = sprintf(strings.welcome, player.name);
-				io.to('/all').emit('message', str);
-				
-				//trigger map refresh every 1 second
-				intMapRefresh = setInterval(function() {
-					io.to(player.name).emit('map', maps[player.at]);
-				}, 1000);
+					//trigger events
+					console.log(player.name + ' has logged in');
+					io.to(player.name).emit('loginverified', player.name);
+					var str = sprintf(strings.welcome, player.name);
+					io.to('/all').emit('message', str);
+					
+					//trigger map refresh every 1 second
+					intMapRefresh = setInterval(function() {
+						io.to(player.name).emit('map', maps[player.at]);
+					}, 1000);
 
-				//update player stats every 1 second
-				intStatsRefresh = setInterval(function() {
-					io.to(player.name).emit('stats', player);
-				}, 1000);
+					//update player stats every 1 second
+					intStatsRefresh = setInterval(function() {
+						io.to(player.name).emit('stats', player);
+					}, 1000);
 
-				//display inventory
-				var inventory = {};
-				for(var i in player.items){
-					inventory[i] = {
-						'quantity': player.items[i].quantity,
-						'quantityLimit': player.items[i].quantityLimit
-					};
+					//display inventory
+					var inventory = {};
+					for(var i in player.items){
+						inventory[i] = {
+							'quantity': player.items[i].quantity,
+							'quantityLimit': player.items[i].quantityLimit
+						};
+					}
+					io.to(player.name).emit('inventory', inventory);
+
+					//start recovery of hp
+					player.startRecovery();
+
+					//take out of combat
+					player.inCombat = false;
 				}
-				io.to(player.name).emit('inventory', inventory);
-
-				//start recovery of hp
-				player.startRecovery();
-
-				//take out of combat
-				player.inCombat = false;
+				else{
+					//wrong password
+					io.to(socket.id).emit('loginfailed');
+				}
 			}
 			else{
-				//wrong password
-				io.to(socket.id).emit('loginfailed');
+				//already logged in
+				io.to(socket.id).emit('loggedin');
 			}
 		}
 		else{
@@ -245,6 +255,7 @@ io.on('connection', function(socket){
 			//leave combat
 			player.stopRecovery();
 			player.inCombat = false;
+			delete player.isLoggedin;
 
 			//leave channels
 			socket.leave('/hints');

@@ -47,7 +47,6 @@ $('#command').submit(function(){
 // Event handlers for events triggered by server
 //==============================================
 socket.on('servershutdown' ,function(){
-  socket.emit('disconnect');
   alert('server restarting');
   document.location.href = '/';
 });
@@ -65,6 +64,10 @@ socket.on('loginverified', function(username){
     $('#m').focus();
   });
 });
+
+socket.on('loggedin', function(){
+  alert('That user is already logged in.');
+})
 
 socket.on('loginfailed', function(){
   alert('Wrong username/password, please try again');

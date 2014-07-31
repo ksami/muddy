@@ -51,9 +51,10 @@ function Item(itemid) {
 
 }
 
-for(var i=0; i<2; i++) {
-	items.push(new Item('e001'));
-}
+//testing, places 2 katanas at m0-12
+// for(var i=0; i<2; i++) {
+// 	items.push(new Item('e001'));
+// }
 
 module.exports = items;
 module.exports.Item = Item;
