@@ -37,6 +37,8 @@ var strings = {
 	itemnotpickable: 'Item cannot be picked up',
 	itemtoomany: 'Cannot pick up anymore %s',
 	itemslotfilled: 'That slot has already been filled',
+	itemnotequipable: 'Cannot be equipped',
+	itemisequipped: 'Item is already equipped',
 	itemequipped: '%s has been equipped'
 }
 

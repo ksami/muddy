@@ -45,6 +45,7 @@ function Item(itemid) {
 
 	// Wieldable and Wearable
 	this.equipSlot = itemsdata[itemid].equipSlot || null;
+	this.numEquipped = 0;
 
 	// Consumable
 	this.hp = itemsdata[itemid].hp || 0;

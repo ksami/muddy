@@ -111,22 +111,33 @@ function User(data, socketid) {
 
 		//equip item in correct slot
 		if(typeof item === 'object'){
-			for(var i=0; i<item.equipSlot.length; i++){
-				if(this.equipSlots[item.equipSlot[i]] === ''){
-					this.equipSlots[item.equipSlot[i]] = item.name;
-					(this.items[item.name]).isEquipped = true;
+			if(item.isEquipped === false || ((item.isEquipped === true) && (item.numEquipped < item.quantity))){
+				if(item.isWieldable === true || item.isWearable === true){
+					for(var i=0; i<item.equipSlot.length; i++){
+						if(this.equipSlots[item.equipSlot[i]] === ''){
+							this.equipSlots[item.equipSlot[i]] = item.name;
+							item.isEquipped = true;
+							item.numEquipped += 1;
 
-					//TODO: add on stats
-					this.atk.min += item.atk.min;
-					this.atk.max += item.atk.max;
-					this.crit.chance += item.crit.chance;
-					this.crit.time += item.crit.time;
-					this.spd += item.spd;
+							//TODO: add on stats
+							this.atk.min += item.atk.min;
+							this.atk.max += item.atk.max;
+							this.crit.chance += item.crit.chance;
+							this.crit.time += item.crit.time;
+							this.spd += item.spd;
 
-					return item.name;
+							return item.name;
+						}
+					}
+					return 'slotfilled';
+				}
+				else{
+					return 'notequipable';
 				}
 			}
-			return 'slotfilled';
+			else{
+				return 'isequipped';
+			}
 		}
 		else{
 			return 'noitem';

@@ -656,6 +656,12 @@ var Controller = {
 			if(success === 'noitem'){
 				io.to(player.name).emit('message', strings.itemmissing);
 			}
+			else if(success === 'notequipable'){
+				io.to(player.name).emit('message', strings.itemnotequipable);
+			}
+			else if(success === 'isequipped'){
+				io.to(player.name).emit('message', strings.itemisequipped);
+			}
 			else if(success === 'slotfilled'){
 				io.to(player.name).emit('message', strings.itemslotfilled);
 			}
