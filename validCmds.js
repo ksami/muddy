@@ -1,9 +1,9 @@
 var validCmds = {
-	moveCmds: ['north', 'south', 'east', 'west'],
+	moveCmds: ['n', 's', 'e', 'w'],
 	chatCmds: ['/all'],
-	settingsCmds: ['@help'],
+	settingsCmds: ['@help', '@commands'],
 	fightCmds: ['poke', 'kick', 'chill'],
-	skillCmds: ['take', 'equip']
+	skillCmds: ['take', 'pick', 'wield', 'wear', 'equip', 'unequip']
 };
 
 validCmds.allSortedCmds = validCmds.moveCmds.concat(validCmds.chatCmds, validCmds.settingsCmds, validCmds.fightCmds, validCmds.skillCmds).sort();

@@ -601,7 +601,7 @@ var Controller = {
 
 	//executes skills/actions besides combat
 	skill: function(command, socket, player) {
-		if(command.skill === 'take'){
+		if(command.skill === 'take' || command.skill === 'pick'){
 			//check if item exists in map
 			var itemsInMap = maps[player.at].items.filter(function(item){
 				//include in array if item.name starts with command.target
@@ -651,7 +651,7 @@ var Controller = {
 				io.to(player.name).emit('message', strings.itemmissing);
 			}
 		}
-		else if(command.skill === 'equip'){
+		else if(command.skill === 'equip' || command.skill === 'wield' || command.skill === 'wear'){
 			var success = player.equipItem(command.target);
 			if(success === 'noitem'){
 				io.to(player.name).emit('message', strings.itemmissing);
@@ -671,6 +671,20 @@ var Controller = {
 				io.to(player.name).emit('equipment', player.equipSlots);
 			}
 		}
+		else if(command.skill === 'unequip'){
+			var success = player.unequipItem(command.target);
+			if(success === 'slotnotfound'){
+				io.to(player.name).emit('message', strings.itemslotnotfound);
+			}
+			else if(success === 'slotempty'){
+				io.to(player.name).emit('message', strings.itemslotempty);
+			}
+			else{
+				var str = sprintf(strings.itemunequipped, success);
+				io.to(player.name).emit('message', str);
+				io.to(player.name).emit('equipment', player.equipSlots);
+			}
+		}
 	},
 
 	//requires msg.to, msg.content
@@ -681,8 +695,15 @@ var Controller = {
 
 	//requires data.setting
 	settings: function(data, player) {
-		if(data.setting === 'help') {
+		if(data.setting === 'help'){
 			io.to(player.name).emit('message', strings.help);
+		}
+		else if(data.setting === 'commands'){
+			strings.commands.sort();
+			
+			for(var i=0; i<strings.commands.length; i++){
+				io.to(player.name).emit('message', strings.commands[i]);	
+			}
 		}
 	}
 

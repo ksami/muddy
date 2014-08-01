@@ -16,14 +16,14 @@ function User(data, socketid) {
 			head: '',
 			body: '',
 			legs: '',
-			rightArm: '',
-			rightHand: '',
-			rightCalf: '',
-			rightFoot: '',
-			leftArm: '',
-			leftHand: '',
-			leftCalf: '',
-			leftFoot: ''
+			rarm: '',
+			rhand: '',
+			rcalf: '',
+			rfoot: '',
+			larm: '',
+			lhand: '',
+			lcalf: '',
+			lfoot: ''
 		};
 		this.atk = {min: 0, max: 0};
 		this.crit = {chance: 0.01, time: 1000};
@@ -144,7 +144,38 @@ function User(data, socketid) {
 		}
 	}
 
+	this.unequipItem = function(slotname) {
+		var item;
+		var itemname;
 
+		for(var slot in this.equipSlots){
+			if(slot.slice(0, slotname.length) === slotname){
+				if(this.equipSlots[slot] !== ''){
+					itemname = this.equipSlots[slot];
+					this.equipSlots[slot] = '';
+
+					item = this.items[itemname];
+					item.numEquipped -= 1;
+					if(item.numEquipped < 1){
+						item.isEquipped = false;
+					}
+
+					//TODO: minus stats
+					this.atk.min -= item.atk.min;
+					this.atk.max -= item.atk.max;
+					this.crit.chance -= item.crit.chance;
+					this.crit.time -= item.crit.time;
+					this.spd -= item.spd;
+
+					return item.name;
+				}
+				else{
+					return 'slotempty';
+				}
+			}
+		}
+		return 'slotnotfound';
+	}
 
 	//================
 	// Common with Mob

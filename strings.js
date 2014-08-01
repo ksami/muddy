@@ -2,10 +2,17 @@
 // use sprintf format eg. sprintf('%s world', 'hello');
 var strings = {
 	//system
-	help: 'Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke <target>" to fight',
+	commands: [
+		'/all <message>',
+		'@help', '@commands',
+		'n','s','e','w',
+		'poke <target>',
+		'take <item>', 'pick <item>', 'wield <item>', 'wear <item>', 'equip <item>', 'unequip <item slot>'
+	],
+	help: 'Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke <target>" to fight, "pick <item>", "equip <item>", "unequip <itemslot>". Type @commands to see a list of commands.',
 	hint: ['Welcome to muddy! Type @help for help.', 'Try not to disturb the ghostlets ;)', 'If you die, you respawn back at the starting map m0-12'],
 	logout: '%s has logged out.',
-	welcome: 'Welcome %s!',
+	welcome: 'Welcome %s! If you are new to muddy, type @help for help.',
 
 	//movement
 	movebad: 'You cannot move in that direction',
@@ -37,9 +44,12 @@ var strings = {
 	itemnotpickable: 'Item cannot be picked up',
 	itemtoomany: 'Cannot pick up anymore %s',
 	itemslotfilled: 'That slot has already been filled',
+	itemslotnotfound: 'Slot not found',
+	itemslotempty: 'Slot is empty',
 	itemnotequipable: 'Cannot be equipped',
 	itemisequipped: 'Item is already equipped',
-	itemequipped: '%s has been equipped'
+	itemequipped: '%s has been equipped',
+	itemunequipped: '%s has been unequipped'
 }
 
 module.exports = strings;

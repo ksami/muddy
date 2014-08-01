@@ -11,7 +11,7 @@ var items = {
 		isPickable: true,
 		isWieldable: true,
 	
-		equipSlot: ['rightHand', 'leftHand'],
+		equipSlot: ['rhand', 'lhand'],
 		quantityLimit: 2,
 	
 		spd: -250,
