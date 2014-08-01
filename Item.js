@@ -32,6 +32,7 @@ function Item(itemid) {
 	// Wieldable
 	this.atk = itemsdata[itemid].atk || {min: 0, max: 0};
 	this.crit = itemsdata[itemid].crit || {chance: 0, time: 0};
+	this.spd = itemsdata[itemid].spd || 0;
 	
 	this.accuracy = itemsdata[itemid].accuracy || 0;
 	this.coolness = itemsdata[itemid].coolness || 0;

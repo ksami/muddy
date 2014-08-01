@@ -26,7 +26,7 @@ function User(data, socketid) {
 			leftFoot: ''
 		};
 		this.atk = {min: 0, max: 0};
-		this.crit = {chance: 0.15, time: 1000};
+		this.crit = {chance: 0.01, time: 1000};
 		this.currentTarget = {};
 		this.currentSkill = {};
 		//================`
