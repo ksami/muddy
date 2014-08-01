@@ -146,7 +146,7 @@ socket.on('inventory', function(inv){
   }
 });
 
-socket.on('equip', function(eqp){
+socket.on('equipment', function(eqp){
   $('#equipment li').remove();
   for(var e in eqp){
     $('#equipment').append($('<li>').text(e + ': ' + eqp[e]));

@@ -35,7 +35,9 @@ var strings = {
 	//items
 	itemmissing: 'Item is missing',
 	itemnotpickable: 'Item cannot be picked up',
-	itemtoomany: 'Cannot pick up anymore %s'
+	itemtoomany: 'Cannot pick up anymore %s',
+	itemslotfilled: 'That slot has already been filled',
+	itemequipped: '%s has been equipped'
 }
 
 module.exports = strings;

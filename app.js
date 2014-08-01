@@ -146,7 +146,7 @@ io.on('connection', function(socket){
 						io.to(player.name).emit('stats', player);
 					}, 1000);
 
-					//display inventory
+					//display inventory, equip
 					var inventory = {};
 					for(var i in player.items){
 						inventory[i] = {
@@ -155,6 +155,7 @@ io.on('connection', function(socket){
 						};
 					}
 					io.to(player.name).emit('inventory', inventory);
+					io.to(player.name).emit('equipment', player.equipSlots);
 
 					//start recovery of hp
 					player.startRecovery();
@@ -651,33 +652,17 @@ var Controller = {
 			}
 		}
 		else if(command.skill === 'equip'){
-			//TODO: see if can move to User as a method
-			console.log('equip');
-			var item;
-
-			//check if target item exists
-			for(var itemname in player.items){
-				if(itemname.slice(0, command.target.length) === command.target){
-					item = player.items[itemname];
-					break;
-				}
+			var success = player.equipItem(command.target);
+			if(success === 'noitem'){
+				io.to(player.name).emit('message', strings.itemmissing);
 			}
-
-			if(typeof item === 'object'){
-				if(player.equipSlots[item.equipSlot] === ''){
-					player.equipSlots[item.equipSlot] = item.name;
-					(player.items[item.name]).isEquipped = true;
-
-					//TODO: add on stats
-
-					io.to(player.name).emit('equip', player.equipSlots);
-				}
-				else{
-					console.log('theres an equip in that slot');
-				}
+			else if(success === 'slotfilled'){
+				io.to(player.name).emit('message', strings.itemslotfilled);
 			}
 			else{
-				console.log('no item');
+				var str = sprintf(strings.itemequipped, success);
+				io.to(player.name).emit('message', str);
+				io.to(player.name).emit('equipment', player.equipSlots);
 			}
 		}
 	},

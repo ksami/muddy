@@ -95,6 +95,36 @@ function User(data, socketid) {
 		return;
 	}
 
+	//TODO: no check for space yet
+	this.equipItem = function(targetname) {
+		var item;
+
+		//check if target item exists
+		for(var itemname in this.items){
+			if(itemname.slice(0, targetname.length) === targetname){
+				item = this.items[itemname];
+				break;
+			}
+		}
+
+		//equip item in correct slot
+		if(typeof item === 'object'){
+			if(this.equipSlots[item.equipSlot] === ''){
+				this.equipSlots[item.equipSlot] = item.name;
+				(this.items[item.name]).isEquipped = true;
+
+				//TODO: add on stats
+
+				return item.name;
+			}
+			else{
+				return 'slotfilled';
+			}
+		}
+		else{
+			return 'noitem';
+		}
+	}
 
 
 
