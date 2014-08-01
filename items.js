@@ -10,11 +10,12 @@ var items = {
 		isPickable: true,
 		isWieldable: true,
 	
-		equipSlot: 'rightHand',
-		quantityLimit: 1,
+		equipSlot: ['rightHand', 'leftHand'],
+		quantityLimit: 2,
 	
-		atk: {min: 20, max: 22},
-		crit: {chance: 0.1, time: 1700},
+		spd: -250,
+		atk: {min: 3, max: 5},
+		crit: {chance: 0.1, time: -200},
 		accuracy: 0.9,
 		coolness: 9001
 	}

@@ -25,7 +25,8 @@ function User(data, socketid) {
 			leftCalf: '',
 			leftFoot: ''
 		};
-		this.crit = {chance: 0.375, time: 1000};
+		this.atk = {min: 0, max: 0};
+		this.crit = {chance: 0.15, time: 1000};
 		this.currentTarget = {};
 		this.currentSkill = {};
 		//================`
@@ -52,6 +53,7 @@ function User(data, socketid) {
 	else {
 		this.items = data.items;
 		this.equipSlots = data.equipSlots;
+		this.atk = data.atk;
 		this.crit = data.crit;
 		this.currentTarget = data.currentTarget;
 		this.currentSkill = data.currentSkill;
@@ -109,17 +111,22 @@ function User(data, socketid) {
 
 		//equip item in correct slot
 		if(typeof item === 'object'){
-			if(this.equipSlots[item.equipSlot] === ''){
-				this.equipSlots[item.equipSlot] = item.name;
-				(this.items[item.name]).isEquipped = true;
+			for(var i=0; i<item.equipSlot.length; i++){
+				if(this.equipSlots[item.equipSlot[i]] === ''){
+					this.equipSlots[item.equipSlot[i]] = item.name;
+					(this.items[item.name]).isEquipped = true;
 
-				//TODO: add on stats
+					//TODO: add on stats
+					this.atk.min += item.atk.min;
+					this.atk.max += item.atk.max;
+					this.crit.chance += item.crit.chance;
+					this.crit.time += item.crit.time;
+					this.spd += item.spd;
 
-				return item.name;
+					return item.name;
+				}
 			}
-			else{
-				return 'slotfilled';
-			}
+			return 'slotfilled';
 		}
 		else{
 			return 'noitem';
@@ -134,6 +141,7 @@ function User(data, socketid) {
 	
 	//pass in target Actor object, skill name
 	//NOTE: no check for if skill exists
+	//NOTE: differs from Mob by calculation of dmg take into acct item and base stats
 	this.damageOther = function(other, skill, critMult) {
 		//if no skill param, default to defaultSkill
 		if(typeof skill === 'undefined') {
@@ -147,10 +155,10 @@ function User(data, socketid) {
 
 		if(typeof critMult === 'undefined') {
 			//damage is discrete
-			rawDamage = Math.floor((Math.random() * skill.atk.max) + skill.atk.min);
+			rawDamage = Math.floor((Math.random() * (skill.atk.max + this.atk.max)) + (skill.atk.min + this.atk.min));
 		}
 		else {
-			rawDamage = critMult * (Math.floor((Math.random() * skill.atk.max) + skill.atk.min));
+			rawDamage = critMult * Math.floor((Math.random() * (skill.atk.max + this.atk.max)) + (skill.atk.min + this.atk.min));
 		}
 
 		var reducedDamage = rawDamage - (Math.floor((Math.random() * other.def.max) + other.def.min));
