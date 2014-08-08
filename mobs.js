@@ -22,7 +22,10 @@ var mobsdata = {
 			poke: skills.poke
 		},
 		defaultSkill: 'poke',
-		items: {'e001': 0.15}
+		items: {
+			'e001': 0.15,
+			'e002': 0.45
+		}
 	},
 	m002: {
 		name: 'ghostlet',

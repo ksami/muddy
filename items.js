@@ -32,7 +32,6 @@ var items = {
 		equipSlot: ['head', 'body', 'legs', 'rarm', 'rcalf', 'rfoot', 'larm', 'lcalf', 'lfoot'],
 		quantityLimit: 99,
 
-		def: {min: 0, max: 1},
 		maxhp: 1
 	},
 	c001: {

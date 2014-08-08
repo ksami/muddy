@@ -7,7 +7,7 @@ var strings = {
 		'@help', '@commands',
 		'n','s','e','w',
 		'poke <target>',
-		'take <item>', 'pick <item>', 'wield <item>', 'wear <item>', 'equip <item>', 'unequip <item slot>'
+		'take <item>', 'pick <item>', 'wield <item>', 'wear <item>', 'equip <item> <item slot>', 'unequip <item slot>'
 	],
 	help: 'Help: "/all <message>" to talk to everyone, "n","s","e","w" to move, "poke <target>" to fight, "pick <item>", "equip <item>", "unequip <itemslot>". Type @commands to see a list of commands.',
 	hint: ['Welcome to muddy! Type @help for help.', 'Try not to disturb the ghostlets ;)', 'If you die, you respawn back at the starting map m0-12'],

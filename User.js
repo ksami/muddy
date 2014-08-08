@@ -123,12 +123,8 @@ function User(data, socketid) {
 									item.isEquipped = true;
 									item.numEquipped += 1;
 
-									//TODO: add on stats
-									this.atk.min += item.atk.min;
-									this.atk.max += item.atk.max;
-									this.crit.chance += item.crit.chance;
-									this.crit.time += item.crit.time;
-									this.spd += item.spd;
+									//apply stats
+									this.equipItemStats(item, 'apply');
 
 									return item.name;
 								}
@@ -147,12 +143,8 @@ function User(data, socketid) {
 								item.isEquipped = true;
 								item.numEquipped += 1;
 
-								//TODO: add on stats
-								this.atk.min += item.atk.min;
-								this.atk.max += item.atk.max;
-								this.crit.chance += item.crit.chance;
-								this.crit.time += item.crit.time;
-								this.spd += item.spd;
+								//apply stats
+								this.equipItemStats(item, 'apply');
 
 								return item.name;
 							}
@@ -173,6 +165,33 @@ function User(data, socketid) {
 		}
 	};
 
+	//to be called from equipItem
+	//applies or takes away stats of item equipped
+	this.equipItemStats = function(item, toapply) {
+		var apply = 1;
+		
+		if(toapply === 'apply'){
+			apply = 1;
+		}
+		else{
+			apply = -1;
+		}
+
+		//TODO: add on stats
+		this.atk.min += apply * item.atk.min;
+		this.atk.max += apply * item.atk.max;
+		this.crit.chance += apply * item.crit.chance;
+		this.crit.time += apply * item.crit.time;
+		this.spd += apply * item.spd;
+
+		this.def.min += apply * item.def.min;
+		this.def.max += apply * item.def.max;
+		this.maxhp += apply * item.maxhp;
+		this.recovery.spd += apply * item.recovery.spd;
+		this.recovery.min += apply * item.recovery.min;
+		this.recovery.max += apply * item.recovery.max;
+	}
+
 	this.unequipItem = function(slotname) {
 		var item;
 		var itemname;
@@ -189,12 +208,8 @@ function User(data, socketid) {
 						item.isEquipped = false;
 					}
 
-					//TODO: minus stats
-					this.atk.min -= item.atk.min;
-					this.atk.max -= item.atk.max;
-					this.crit.chance -= item.crit.chance;
-					this.crit.time -= item.crit.time;
-					this.spd -= item.spd;
+					//take away stats
+					this.equipItemStats(item, 'takeaway');
 
 					return item.name;
 				}
