@@ -95,10 +95,10 @@ function User(data, socketid) {
 			this.items[item.name] = item;
 		}
 		return;
-	}
+	};
 
 	//TODO: no check for space yet
-	this.equipItem = function(targetname) {
+	this.equipItem = function(targetname, targetslot) {
 		var item;
 
 		//check if target item exists
@@ -113,23 +113,52 @@ function User(data, socketid) {
 		if(typeof item === 'object'){
 			if(item.isEquipped === false || ((item.isEquipped === true) && (item.numEquipped < item.quantity))){
 				if(item.isWieldable === true || item.isWearable === true){
-					for(var i=0; i<item.equipSlot.length; i++){
-						if(this.equipSlots[item.equipSlot[i]] === ''){
-							this.equipSlots[item.equipSlot[i]] = item.name;
-							item.isEquipped = true;
-							item.numEquipped += 1;
+					
+					if(targetslot !== 'undefined'){
+						for(var i=0; i<item.equipSlot.length; i++){
+							if(item.equipSlot[i].slice(0, targetslot.length) === targetslot){
+								//if nothing in slot
+								if(this.equipSlots[item.equipSlot[i]] === ''){
+									this.equipSlots[item.equipSlot[i]] = item.name;
+									item.isEquipped = true;
+									item.numEquipped += 1;
 
-							//TODO: add on stats
-							this.atk.min += item.atk.min;
-							this.atk.max += item.atk.max;
-							this.crit.chance += item.crit.chance;
-							this.crit.time += item.crit.time;
-							this.spd += item.spd;
+									//TODO: add on stats
+									this.atk.min += item.atk.min;
+									this.atk.max += item.atk.max;
+									this.crit.chance += item.crit.chance;
+									this.crit.time += item.crit.time;
+									this.spd += item.spd;
 
-							return item.name;
+									return item.name;
+								}
+								else{
+									return 'slotfilled';
+								}
+							}
 						}
+						return 'slotnotfound';
 					}
-					return 'slotfilled';
+					else{
+						for(var i=0; i<item.equipSlot.length; i++){
+							//if nothing in slot
+							if(this.equipSlots[item.equipSlot[i]] === ''){
+								this.equipSlots[item.equipSlot[i]] = item.name;
+								item.isEquipped = true;
+								item.numEquipped += 1;
+
+								//TODO: add on stats
+								this.atk.min += item.atk.min;
+								this.atk.max += item.atk.max;
+								this.crit.chance += item.crit.chance;
+								this.crit.time += item.crit.time;
+								this.spd += item.spd;
+
+								return item.name;
+							}
+						}
+						return 'slotfilled';
+					}
 				}
 				else{
 					return 'notequipable';
@@ -142,7 +171,7 @@ function User(data, socketid) {
 		else{
 			return 'noitem';
 		}
-	}
+	};
 
 	this.unequipItem = function(slotname) {
 		var item;
@@ -175,7 +204,7 @@ function User(data, socketid) {
 			}
 		}
 		return 'slotnotfound';
-	}
+	};
 
 	//================
 	// Common with Mob
@@ -217,7 +246,7 @@ function User(data, socketid) {
 		}
 
 		return reducedDamage;
-	}
+	};
 
 	//Recover hp
 	this.recover = function(self) {
@@ -233,7 +262,7 @@ function User(data, socketid) {
 				self.hp = self.maxhp;
 			}
 		}
-	}
+	};
 
 	var self = this;
 	//Timer for recovery
@@ -243,13 +272,13 @@ function User(data, socketid) {
 		timer = setInterval(function(){
 			self.recover(self);
 		},this.recovery.spd);
-	}
+	};
 	//Stops timer
 	this.stopRecovery = function(){
 		if(typeof timer !== 'undefined') {
 			clearInterval(timer);
 		}
-	}
+	};
 
 	//==
 	// Same name, diff function from Mob
@@ -262,12 +291,12 @@ function User(data, socketid) {
 
 		//respawn in 2 seconds
 		setTimeout(function(){self.respawn(self);}, 2000);
-	}
+	};
 
 	this.respawn = function() {
 		this.isDead = false;
 		this.startRecovery();
-	}
+	};
 }
 
 // Expose User class to main module app.js

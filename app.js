@@ -652,7 +652,7 @@ var Controller = {
 			}
 		}
 		else if(command.skill === 'equip' || command.skill === 'wield' || command.skill === 'wear'){
-			var success = player.equipItem(command.target);
+			var success = player.equipItem(command.target, command.param);
 			if(success === 'noitem'){
 				io.to(player.name).emit('message', strings.itemmissing);
 			}
@@ -664,6 +664,9 @@ var Controller = {
 			}
 			else if(success === 'slotfilled'){
 				io.to(player.name).emit('message', strings.itemslotfilled);
+			}
+			else if(success === 'slotnotfound'){
+				io.to(player.name).emit('message', strings.itemslotnotfound);
 			}
 			else{
 				var str = sprintf(strings.itemequipped, success);

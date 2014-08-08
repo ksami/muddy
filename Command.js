@@ -25,11 +25,17 @@ function Command(cmd, input) {
 
 		this.type = 'skill';
 		this.skill = cmd;
-		if(params.length > 1) {
+		if(params.length > 2) {
 			this.target = params[1];
+			this.param = params[2];
+		}
+		else if(params.length > 1) {
+			this.target = params[1];
+			this.param = 'undefined';
 		}
 		else {
 			this.target = 'undefined';
+			this.param = 'undefined';
 		}
 	}
 	else if(validCmds.chatCmds.indexOf(cmd) >= 0) {
