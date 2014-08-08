@@ -249,7 +249,7 @@ io.on('connection', function(socket){
 	});
 
 	// Save user data on disconnect
-	socket.on('disconnect', function() {
+	socket.on('dc', function() {
 		console.log('user ' + socket.id + ' disconnected');
 
 		//if logged in

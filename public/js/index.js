@@ -43,6 +43,11 @@ $('#command').submit(function(){
   return false;
 });
 
+$(window).on('beforeunload', function(){
+  socket.emit('dc');
+  console.log('dc');
+});
+
 //==============================================
 // Event handlers for events triggered by server
 //==============================================
@@ -151,7 +156,7 @@ socket.on('equipment', function(eqp){
   for(var e in eqp){
     $('#equipment').append($('<li>').text(e + ': ' + eqp[e]));
   }
-})
+});
 
 socket.on('combatInfo', function(data){
   var pdead = '';
