@@ -1,6 +1,6 @@
 /*
- * Server-side JS - Main file
- */
+* Server-side JS - Main file
+*/
 
 // Environment configurables
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
@@ -38,7 +38,15 @@ http.listen(port, ipaddress, function(){
 
 // Route handler
 app.get('/',function(req, res){
-	res.sendfile(_fileindex);
+	res.sendfile(_fileindex, function(err) {
+		if (err) {
+			console.log(err);
+			res.status(err.status).end();
+		}
+		else {
+			console.log('Sent:', fileName);
+		}
+	});
 });
 
 app.get('/register',function(req, res){
@@ -56,7 +64,7 @@ fs.readFile(_filemaps, 'utf8', function (err, data) {
 		return;
 	}
 	maps = JSON.parse(data);
-	
+
 	//add mobs to maps
 	for(var i=0; i<mobs.length; i++) {
 		(maps[mobs[i].at].mobs).push(mobs[i]);
@@ -90,12 +98,12 @@ io.on('connection', function(socket){
 	var player;
 	var intMapRefresh;
 	var intStatsRefresh;
-	
+
 	// When user first connects
 	socket.join(socket.id);
 	console.log('user ' + socket.id + ' connected');
 	io.to(socket.id).emit('socketid', socket.id);
-	
+
 	//update users global array
 	readUsersFile();
 
@@ -119,7 +127,7 @@ io.on('connection', function(socket){
 					//assign globals
 					socketid[socket.id] = login.username;
 					player = users[login.username];
-					
+
 					//add player to map
 					(maps[player.at]).users[player.name] = player;
 
@@ -135,7 +143,7 @@ io.on('connection', function(socket){
 					io.to(player.name).emit('loginverified', player.name);
 					var str = sprintf(strings.welcome, player.name);
 					io.to('/all').emit('message', str);
-					
+
 					//trigger map refresh every 1 second
 					intMapRefresh = setInterval(function() {
 						io.to(player.name).emit('map', maps[player.at]);
@@ -242,7 +250,7 @@ io.on('connection', function(socket){
 					break;
 				}
 			}
-			
+
 			player.inCombat = false;
 			Controller.fight({'skill': critSkill||player.currentSkill, 'target': player.currentTarget}, socket, player, critMult);
 		}
@@ -362,7 +370,7 @@ var Controller = {
 	fight: function(data, socket, player, critMult) {
 
 		//allow for attacking one but being attacked by many
-		//but due to the mysterious nature of mobs 
+		//but due to the mysterious nature of mobs
 		//they can attack many at once since players are the one who start combat
 		if(player.inCombat === false) {
 			//check if target exists in map
@@ -387,7 +395,7 @@ var Controller = {
 				else {
 					target = data.target;
 				}
-				
+
 				if(typeof target !== 'undefined'){
 					target.inCombat = true;
 					player.inCombat = true;
@@ -454,7 +462,7 @@ var Controller = {
 							io.to(player.name).emit('message', strplayer);
 						}
 					}, player.spd);
-					
+
 					//start target combat
 					var intTargetCombat = setInterval(function(){
 						var dmg = target.damageOther(player);	//using target's default skill
@@ -491,7 +499,7 @@ var Controller = {
 							var strothers;
 							strothers = sprintf(strings.playerdefeat_o, player.name, target.name);
 							strplayer = sprintf(strings.playerdefeat_p, target.name);
-							
+
 							socket.broadcast.to(player.at).emit('message', {'msg': strothers, 'class': 'blue'});
 							io.to(player.name).emit('message', {'msg': strplayer, 'class': 'red bold'});
 
@@ -555,7 +563,7 @@ var Controller = {
 
 				//update map
 				io.to(player.name).emit('map', maps[player.at]);
-				
+
 				//join next map's channel
 				socket.join(player.at);
 			}
@@ -586,7 +594,7 @@ var Controller = {
 
 				//update map
 				io.to(player.name).emit('map', maps[player.at]);
-				
+
 				//join next map's channel
 				socket.join(player.at);
 			}
@@ -640,7 +648,7 @@ var Controller = {
 						var str = sprintf(strings.itemtoomany, target.name);
 						io.to(player.name).emit('message', str);
 					}
-				
+
 				}
 				else{
 					var str = sprintf(strings.itemnotpickable, target.name);
@@ -703,9 +711,9 @@ var Controller = {
 		}
 		else if(data.setting === 'commands'){
 			strings.commands.sort();
-			
+
 			for(var i=0; i<strings.commands.length; i++){
-				io.to(player.name).emit('message', strings.commands[i]);	
+				io.to(player.name).emit('message', strings.commands[i]);
 			}
 		}
 	}
@@ -719,14 +727,14 @@ var Controller = {
 
 // Hashing function
 var hash = function(str) {
-  var hash = 0, i, chr, len;
-  if (str.length === 0) return hash;
-  for (i = 0, len = str.length; i < len; i++) {
-    chr   = str.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0;
-  }
-  return hash;
+	var hash = 0, i, chr, len;
+	if (str.length === 0) return hash;
+	for (i = 0, len = str.length; i < len; i++) {
+		chr   = str.charCodeAt(i);
+		hash  = ((hash << 5) - hash) + chr;
+		hash |= 0;
+	}
+	return hash;
 };
 
 // Use synchronous file read to verify password
@@ -754,7 +762,7 @@ var updateUsersFile = function(logout, playername) {
 		}
 		else {
 			console.log('Users.JSON save to ' + _fileusers);
-			
+
 			if(logout === 'logout'){
 				delete users[playername];
 			}
