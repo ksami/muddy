@@ -50,7 +50,15 @@ app.get('/',function(req, res){
 });
 
 app.get('/register',function(req, res){
-	res.sendfile(_fileregister);
+	res.sendfile(_fileregister, function(err) {
+		if (err) {
+			console.log(err);
+			res.status(err.status).end();
+		}
+		else {
+			console.log('Sent:', _fileregister);
+		}
+	});
 });
 
 //===============================
