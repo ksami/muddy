@@ -44,7 +44,7 @@ app.get('/',function(req, res){
 			res.status(err.status).end();
 		}
 		else {
-			console.log('Sent:', fileName);
+			console.log('Sent:', _fileindex);
 		}
 	});
 });
